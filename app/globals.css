@@ -592,3 +592,19 @@ main { min-height: 50vh; }
 .pb-green { background: #e8f5ee; color: #1a7a4a; }
 .pc .pcat { text-transform: uppercase; letter-spacing: .05em; }
 @media (min-width: 1100px) { .pgrid { grid-template-columns: repeat(4, 1fr); } }
+
+/* Footer v2: brand + 4 equal link columns */
+.fttop { display: grid; gap: 32px 24px; grid-template-columns: 1fr; }
+@media (min-width: 600px) { .fttop { grid-template-columns: repeat(2, 1fr); } .ftbrand { grid-column: 1 / -1; } }
+@media (min-width: 1024px) { .fttop { grid-template-columns: 1.3fr repeat(4, 1fr); } .ftbrand { grid-column: auto; } }
+.ftbrand .ftdesc { max-width: 320px; }
+.ftabout { margin-top: 14px; }
+.ftlinks a.ftall { color: var(--accent); font-weight: 600; }
+.ftlinks a.ftall:hover { color: #fff; }
+
+/* Header: keep the full nav inside the viewport on 1180–1360px screens */
+@media (min-width: 1180px) and (max-width: 1360px) {
+  .shi { gap: 8px; }
+  .snav a { padding: 6px 7px; font-size: 12.5px; }
+  .snav .ncta { padding: 7px 10px; margin-left: 2px; }
+}

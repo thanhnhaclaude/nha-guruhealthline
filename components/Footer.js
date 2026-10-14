@@ -2,52 +2,74 @@ import Link from "next/link";
 import Logo from "./Logo";
 import { SITE_NAME } from "@/lib/site";
 import { TOPICS } from "@/lib/topics";
-import { getAllIngredients, getAllPosts } from "@/lib/content";
+import { getAllPosts } from "@/lib/content";
 import { TOOLS } from "@/lib/tools";
 
+// Each link column holds the same number of links so the footer stays balanced.
+const PER_COLUMN = 8;
+const POPULAR_INGREDIENTS = [
+  ["magnesium", "Magnesium"], ["vitamin-d3", "Vitamin D3"], ["omega-3", "Omega-3"], ["creatine", "Creatine"],
+  ["ashwagandha", "Ashwagandha"], ["zinc", "Zinc"], ["probiotics", "Probiotics"], ["melatonin", "Melatonin"],
+];
+
+function Column({ title, all, links }) {
+  return (
+    <div>
+      <div className="ftcolt">{title}</div>
+      <ul className="ftlinks">
+        {links.slice(0, PER_COLUMN).map(([href, label]) => (
+          <li key={href}><Link href={href}>{label}</Link></li>
+        ))}
+        <li><Link href={all[0]} className="ftall">{all[1]} →</Link></li>
+      </ul>
+    </div>
+  );
+}
+
 export default function Footer() {
-  const ingredients = getAllIngredients();
   const compare = getAllPosts().filter((p) => p.category === "compare");
   const month = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
   return (
     <footer className="sf">
       <div className="fti">
         <div className="fttop">
-          <div>
+          <div className="ftbrand">
             <div className="ftlogo"><Logo /></div>
             <p className="ftdesc">
               Evidence-graded ingredient guides, honest comparisons and {TOOLS.length} free tools to help you make better
               supplement decisions. Updated {month}.
             </p>
-            <p className="ftcopy">© {new Date().getFullYear()} {SITE_NAME} · All rights reserved</p>
-          </div>
-          <div>
-            <div className="ftcolt">Health Goals</div>
-            <ul className="ftlinks">
-              {TOPICS.slice(0, 10).map((t) => <li key={t.slug}><Link href={`/${t.slug}`}>{t.name}</Link></li>)}
-            </ul>
-          </div>
-          <div>
-            <div className="ftcolt">Ingredients &amp; Compare</div>
-            <ul className="ftlinks">
-              <li><Link href="/ingredients">All ingredients</Link></li>
-              {ingredients.map((i) => <li key={i.slug}><Link href={`/ingredients/${i.slug}`}>{i.name}</Link></li>)}
-              <li><Link href="/compare">All comparisons</Link></li>
-              {compare.slice(0, 6).map((p) => <li key={p.slug}><Link href={`/${p.slug}`}>{p.vsA} vs {p.vsB}</Link></li>)}
-            </ul>
-          </div>
-          <div>
-            <div className="ftcolt">Tools &amp; Info</div>
-            <ul className="ftlinks">
-              <li><Link href="/tools">All free tools</Link></li>
-              {TOOLS.slice(0, 8).map((t) => <li key={t.slug}><Link href={t.href}>{t.short}</Link></li>)}
-              <li><Link href="/dosing-safety">Dosing &amp; safety</Link></li>
-              <li><Link href="/supplement-safety-database">Safety database</Link></li>
-              <li><Link href="/articles">Articles</Link></li>
-              <li><Link href="/reviews">Reviews</Link></li>
+            <ul className="ftlinks ftabout">
               <li><Link href="/about">About us</Link></li>
+              <li><Link href="/editorial-policy">Editorial policy</Link></li>
+              <li><Link href="/supplement-safety-database">Safety database</Link></li>
             </ul>
           </div>
+          <Column
+            title="Health Goals"
+            all={["/all-supplements", "All health goals"]}
+            links={TOPICS.filter((t) => t.grid).map((t) => [`/${t.slug}`, t.name])}
+          />
+          <Column
+            title="Ingredients"
+            all={["/ingredients", "All ingredients"]}
+            links={POPULAR_INGREDIENTS.map(([slug, name]) => [`/ingredients/${slug}`, name])}
+          />
+          <Column
+            title="Compare & Guides"
+            all={["/compare", "All comparisons"]}
+            links={[
+              ...compare.slice(0, 5).map((p) => [`/${p.slug}`, `${p.vsA} vs ${p.vsB}`.replace(/\s*\(.*?\)/g, "")]),
+              ["/dosing-safety", "Dosing & safety"],
+              ["/articles", "Articles"],
+              ["/reviews", "Reviews"],
+            ]}
+          />
+          <Column
+            title="Free Tools"
+            all={["/tools", "All free tools"]}
+            links={TOOLS.map((t) => [t.href, t.short])}
+          />
         </div>
         <div className="ftbot">
           <div className="ftlegal">
@@ -58,9 +80,9 @@ export default function Footer() {
             <Link href="/all-supplements">Sitemap</Link>
           </div>
           <p className="ftdisc">
-            Content is for education only and isn&apos;t medical advice. Statements have not been evaluated by the FDA.
-            Products discussed are not intended to diagnose, treat, cure or prevent any disease. As an Amazon Associate we
-            earn from qualifying purchases.
+            © {new Date().getFullYear()} {SITE_NAME}. Content is for education only and isn&apos;t medical advice. Statements
+            have not been evaluated by the FDA. Products discussed are not intended to diagnose, treat, cure or prevent any
+            disease. As an Amazon Associate we earn from qualifying purchases.
           </p>
         </div>
       </div>
