@@ -575,3 +575,6 @@ main { min-height: 50vh; }
   .cc, .pc, .ing-card-home, .comp-card, .tool-card-d { transition: none; }
   .cc:hover, .pc:hover, .ing-card-home:hover, .comp-card:hover, .tool-card-d:hover { transform: none; }
 }
+.sev-tag { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.sev-tag.avoid { background: #fdecec; color: var(--danger); }
+.sev-tag.caution { background: var(--gold-soft); color: var(--gold-text); }

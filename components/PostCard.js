@@ -3,7 +3,7 @@ import { CATEGORIES } from "@/lib/site";
 
 export default function PostCard({ post }) {
   return (
-    <Link href={`/${post.slug}`} className="card">
+    <Link href={post.href || `/${post.slug}`} className="card">
       <span className="tag">{CATEGORIES[post.category]?.name}</span>
       <h3>{post.title}</h3>
       <p>{post.description}</p>

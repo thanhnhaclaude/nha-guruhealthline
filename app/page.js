@@ -177,6 +177,7 @@ export default function Home() {
                 <span>{w.text}</span>
               </div>
             ))}
+            <Link href="/supplement-safety-database" className="safety-link">View the full Supplement Safety Database →</Link>
             <Link href="/tools/supplement-interaction-checker" className="safety-link">Check your own stack in the Interaction Checker →</Link>
           </div>
         </div>

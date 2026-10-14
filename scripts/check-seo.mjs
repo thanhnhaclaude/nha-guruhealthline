@@ -16,6 +16,8 @@ const { TOOLS } = await import("../lib/tools.js");
 const files = [
   ...list("posts").map((f) => ({ file: path.join(C, "posts", f), slug: strip(f) })),
   ...list("ingredients").map((f) => ({ file: path.join(C, "ingredients", f), slug: `ingredients/${strip(f)}` })),
+  ...list("topics").map((f) => ({ file: path.join(C, "topics", f), slug: strip(f) })),
+  ...list("articles").map((f) => ({ file: path.join(C, "articles", f), slug: `articles/${strip(f)}` })),
 ];
 const knownSlugs = new Set([
   ...files.map((f) => f.slug),
@@ -23,7 +25,7 @@ const knownSlugs = new Set([
   ...list("reviews").map((f) => `reviews/${strip(f)}`),
   ...TOPICS.map((t) => t.slug),
   ...TOOLS.map((t) => t.href.slice(1)),
-  "ingredients", "compare", "dosing-safety", "tools", "reviews", "all-supplements", "quiz", "search",
+  "ingredients", "compare", "dosing-safety", "tools", "reviews", "all-supplements", "quiz", "search", "articles", "supplement-safety-database",
 ]);
 
 const seen = { title: new Map(), desc: new Map() };
@@ -39,7 +41,12 @@ for (const { file, slug } of files) {
   const title = data.seoTitle || data.title || "";
   const kw = (data.primaryKeyword || "").toLowerCase();
   const desc = data.description || "";
-  const text = `${data.answer || ""} ${content}`.toLowerCase();
+  // Everything that renders as page text: answer box, body, picks table and FAQ.
+  const extra = [
+    ...(data.picks || []).map((p) => `${p.name} ${p.dose} ${p.note}`),
+    ...(data.faq || []).map((f) => `${f.q} ${f.a}`),
+  ].join(" ");
+  const text = `${data.answer || ""} ${content} ${extra}`.toLowerCase();
   const words = text.split(/\s+/).filter(Boolean);
 
   if (!title) err("missing title");
@@ -53,10 +60,11 @@ for (const { file, slug } of files) {
     if (!loose(title)) warn(`primary keyword words not all in <title>`);
     if (!loose(data.title || "")) warn(`primary keyword words not all in H1`);
     if (!loose(words.slice(0, 120).join(" "))) warn("primary keyword not in the first ~100 words");
-    // Keyword stuffing check: exact-phrase density.
+    // Keyword stuffing check: the exact phrase repeated unnaturally often
+    // (3+ times and more than once per 100 words of visible text).
     const hits = text.split(kw).length - 1;
-    const density = (hits * kwWords.length * 100) / words.length;
-    if (density > 2.5) err(`keyword density ${density.toFixed(1)}% looks like stuffing (> 2.5%)`);
+    const per100 = (hits * 100) / words.length;
+    if (hits >= 3 && per100 > 1) err(`exact keyword phrase used ${hits}× (${per100.toFixed(1)} per 100 words) looks like stuffing`);
   }
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug.split("/").pop())) err(`URL slug "${slug}" should be lowercase words joined by hyphens`);
   if (!data.sources?.length) warn("no sources cited (important for health/YMYL topics)");
@@ -67,7 +75,7 @@ for (const { file, slug } of files) {
   }
   for (const [, label, href] of content.matchAll(/\[([^\]]+)\]\((\/[^)#]*)\)/g)) {
     if (/^(click here|here|read more|this)$/i.test(label.trim())) warn(`vague link text "${label}"`);
-    if (!knownSlugs.has(href.replace(/^\//, ""))) err(`broken internal link ${href}`);
+    if (!knownSlugs.has(href.replace(/^\//, "").replace(/\/$/, ""))) err(`broken internal link ${href}`);
   }
   for (const r of data.related || []) if (!knownSlugs.has(r)) err(`related slug "${r}" not found`);
   const internal = [...content.matchAll(/\]\(\/[^)]+\)/g)].length;

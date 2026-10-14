@@ -42,6 +42,8 @@ export default function Footer() {
               <li><Link href="/tools">All free tools</Link></li>
               {TOOLS.slice(0, 8).map((t) => <li key={t.slug}><Link href={t.href}>{t.short}</Link></li>)}
               <li><Link href="/dosing-safety">Dosing &amp; safety</Link></li>
+              <li><Link href="/supplement-safety-database">Safety database</Link></li>
+              <li><Link href="/articles">Articles</Link></li>
               <li><Link href="/reviews">Reviews</Link></li>
               <li><Link href="/about">About us</Link></li>
             </ul>
