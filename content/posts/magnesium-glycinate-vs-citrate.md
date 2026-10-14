@@ -3,6 +3,9 @@ title: "Magnesium Glycinate vs Citrate: Which Form Should You Take?"
 seoTitle: "Magnesium Glycinate vs Citrate: Which to Take?"
 description: "Glycinate is gentler on the stomach; citrate is cheaper and helps constipation. Compare absorption, side effects and elemental dose to choose."
 category: compare
+vsA: Magnesium Glycinate
+vsB: Magnesium Citrate
+vsVerdict: "Glycinate for daily comfort, citrate for regularity and price"
 topics: [sleep, gut-health]
 date: 2026-10-14
 updated: 2026-10-14

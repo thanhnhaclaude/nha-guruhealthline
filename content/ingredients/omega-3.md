@@ -1,5 +1,6 @@
 ---
 name: Omega-3 (EPA & DHA)
+group: Essential fats
 title: "Omega-3 Supplements: Benefits, Dosage and How to Choose"
 seoTitle: "Omega-3 Supplements: Benefits, EPA/DHA Dose & Safety"
 description: "EPA and DHA omega-3s support heart, brain and eye health. See what the evidence shows, how much EPA + DHA to take, and how to pick a pure supplement."

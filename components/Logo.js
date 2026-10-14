@@ -1,8 +1,13 @@
-export default function Logo({ size = 28 }) {
+import { SITE_NAME } from "@/lib/site";
+
+// Two-tone wordmark: first half green, second half gold (e.g. Nutri|Verdict).
+export default function Logo() {
+  const m = SITE_NAME.match(/^([A-Z][a-z]+)(.*)$/);
+  const [a, b] = m ? [m[1], m[2]] : [SITE_NAME, ""];
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-      <rect width="32" height="32" rx="8" fill="var(--primary)" />
-      <path d="M9 16.5l4.5 4.5L23 11" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <span className="wordmark">
+      {a}
+      <span>{b}</span>
+    </span>
   );
 }

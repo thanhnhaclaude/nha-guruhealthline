@@ -1,12 +1,11 @@
 import Link from "next/link";
-import Icon from "@/components/Icon";
+import DirectoryFilter from "@/components/DirectoryFilter";
 import JsonLd from "@/components/JsonLd";
-import PostCard from "@/components/PostCard";
-import ProductCard from "@/components/ProductCard";
-import SearchBox from "@/components/SearchBox";
-import { Faq, faqSchema } from "@/components/ArticleParts";
+import { faqSchema } from "@/components/ArticleParts";
+import { buildStoreUrl, storeLabel } from "@/lib/affiliate";
 import { getAllIngredients, getAllPosts, getAllReviews, getTopicItems } from "@/lib/content";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { INTERACTIONS } from "@/lib/tooldata";
 import { TOPICS } from "@/lib/topics";
 import { TOOLS } from "@/lib/tools";
 
@@ -20,21 +19,27 @@ export const metadata = {
 const HOME_FAQ = [
   {
     q: `How does ${SITE_NAME} choose what to recommend?`,
-    a: "We start from official sources and peer-reviewed research, compare product doses with the doses used in studies, and check for third-party testing. Retailers can't pay for placement. Our editorial policy explains the full process.",
+    a: "We start from official sources and peer-reviewed research, compare product doses with the doses used in studies, and check for third-party testing. Retailers can't pay for placement.",
   },
   {
     q: "Are supplements safe to take with medication?",
-    a: "Some aren't. Vitamin K affects warfarin, magnesium and zinc bind some antibiotics, and St. John's wort interacts with many drugs. Use our interaction checker as a starting point and always confirm with your pharmacist.",
+    a: "Some aren't. Vitamin K affects warfarin, magnesium and zinc bind some antibiotics, and St. John's wort interacts with many drugs. Use our interaction checker as a starting point and confirm with your pharmacist.",
   },
   {
     q: "Do I need supplements if I eat a healthy diet?",
-    a: "Often not. A varied diet covers most needs. Common exceptions include vitamin D for people with little sun exposure, B12 for vegans and older adults, folic acid before pregnancy, and iron when a blood test shows you're low.",
+    a: "Often not. Common exceptions are vitamin D with little sun exposure, B12 for vegans and adults over 50, folic acid before pregnancy, and iron when a blood test shows you're low.",
+  },
+  {
+    q: "What do the A–D evidence grades mean?",
+    a: "A means strong, consistent human evidence; B moderate; C limited or mixed; D good evidence of no benefit. Every ingredient guide grades each claimed use.",
   },
   {
     q: "How do you make money?",
-    a: "Through affiliate links: when you buy through a link we may earn a commission at no cost to you. This never changes our verdicts. See our affiliate disclosure.",
+    a: "Through affiliate links: when you buy through a link we may earn a commission at no cost to you. This never changes our verdicts.",
   },
 ];
+
+const TRUST = ["📚 Every claim sourced", "🔬 Evidence graded A–D", "🚫 No paid rankings", "🔄 Updated monthly"];
 
 export default function Home() {
   const posts = getAllPosts();
@@ -42,14 +47,11 @@ export default function Home() {
   const reviews = getAllReviews();
   const compare = posts.filter((p) => p.category === "compare");
   const dosing = posts.filter((p) => p.category === "dosing");
-  const month = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
-
-  const stats = [
-    [reviews.length, "Products reviewed"],
-    [TOPICS.length, "Health goals"],
-    [ingredients.length, "Ingredient guides"],
-    [TOOLS.length, "Free tools"],
-  ];
+  const warnings = INTERACTIONS.filter((i) => i.level === "avoid");
+  const now = new Date();
+  const month = now.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const fullDate = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  const bestGrade = (i) => (i.evidence?.map((e) => e.grade).sort()[0]) || "C";
 
   return (
     <>
@@ -60,220 +62,326 @@ export default function Home() {
             "@type": "WebSite",
             name: SITE_NAME,
             url: SITE_URL,
-            potentialAction: {
-              "@type": "SearchAction",
-              target: `${SITE_URL}/search?q={search_term_string}`,
-              "query-input": "required name=search_term_string",
-            },
+            potentialAction: { "@type": "SearchAction", target: `${SITE_URL}/search?q={search_term_string}`, "query-input": "required name=search_term_string" },
           },
           faqSchema(HOME_FAQ),
         ]}
       />
 
-      {/* 1. Hero */}
-      <section className="hero-band">
-        <div className="container">
-          <span className="pill-badge"><Icon name="check" size={16} /> Independent research · Updated {month}</span>
-          <h1>Find the <em>supplements that work</em>, at the dose that matters</h1>
-          <p className="lead">
-            Evidence-graded reviews, ingredient guides and comparisons across {TOPICS.length} health goals, from sleep
-            and stress to heart, gut and bone health.
+      {/* Hero */}
+      <section className="hero" aria-label="Introduction">
+        <div className="hi">
+          <div className="hbadge">★ Independent Research · Updated {month}</div>
+          <h1>
+            The <em>Supplement Guide</em>
+            <br />
+            That Shows Its Evidence
+          </h1>
+          <p className="hero-tagline">
+            Evidence-graded ingredient guides, honest comparisons and free tools across {TOPICS.length} health goals, from
+            sleep and stress to heart, gut and bone health.
           </p>
-          <div className="hero-stats">
-            {stats.map(([n, l]) => (
-              <div key={l}><b>{n}</b><span>{l}</span></div>
+          <div className="hstats" role="list" aria-label="Site statistics">
+            {[
+              [ingredients.length, "Ingredient guides"],
+              [TOPICS.length, "Health goals"],
+              [posts.length, "Dosing & comparison guides"],
+              [TOOLS.length, "Free tools"],
+            ].map(([n, l]) => (
+              <div className="hstat" role="listitem" key={l}>
+                <span className="hstat-n">{n}</span>
+                <span className="hstat-l">{l}</span>
+              </div>
             ))}
           </div>
-          <SearchBox />
-          <Link href="/quiz" className="quiz-link">
-            <Icon name="quiz" /> Not sure where to start? Take the 60-second supplement quiz
-          </Link>
+          <form className="hsearch" role="search" action="/search" method="get">
+            <label htmlFor="si" className="visually-hidden">Search the site</label>
+            <input id="si" name="q" type="search" placeholder="Search supplements, ingredients, goals…" autoComplete="off" />
+            <button type="submit">Search</button>
+          </form>
+          <Link href="/quiz" className="hquiz">🌟 Not sure which supplement? Take the 60-second quiz →</Link>
         </div>
       </section>
 
-      <div className="container">
-        {/* 2. Browse by goal */}
-        <section className="sec" aria-labelledby="goals">
-          <div className="sec-head">
-            <p className="sec-label">Browse by goal</p>
-            <h2 className="sec-title" id="goals">Find supplements for your specific goal</h2>
+      {/* Trust bar */}
+      <div className="tbar" aria-label="Our standards">
+        <div className="tbari">
+          {TRUST.map((t) => <div className="ti" key={t}>{t}</div>)}
+        </div>
+      </div>
+
+      {/* Browse by category */}
+      <div className="page">
+        <section className="sec" aria-labelledby="cat-title">
+          <div className="sh2">
+            <div className="slbl">Browse by Category</div>
+            <h2 className="stit" id="cat-title">Find Supplements for Your Specific Goal</h2>
+            <p className="ssub">{TOPICS.length} health goals, each with the ingredients, comparisons and reviews that matter for it.</p>
           </div>
-          <div className="cat-grid">
+          <nav className="cgrid" aria-label="Health goals">
             {TOPICS.map((t) => {
               const it = getTopicItems(t.slug);
               const n = it.guides.length + it.ingredients.length + it.reviews.length;
               return (
-                <Link key={t.slug} href={`/${t.slug}`} className="cat-card">
-                  <span className="cat-icon"><Icon name={t.icon} /></span>
+                <Link key={t.slug} href={`/${t.slug}`} className="cc">
+                  <span className="ci" aria-hidden="true">{t.emoji}</span>
                   <span>
-                    <span className="cat-name">{t.name}</span>
-                    <span className="cat-count" style={{ display: "block" }}>{n ? `${n} guides & reviews` : "Coming soon"}</span>
+                    <span className="cn">{t.name}</span>
+                    <span className="ck">{n ? `${n} guide${n === 1 ? "" : "s"}` : "Coming soon"}</span>
                   </span>
                 </Link>
               );
             })}
-          </div>
+          </nav>
         </section>
-
-        {/* 3. Top picks (hidden until real reviews exist) */}
-        {reviews.length > 0 && (
-        <section className="sec" aria-labelledby="picks">
-          <div className="sec-head">
-            <p className="sec-label">Editor&apos;s top picks · {month}</p>
-            <h2 className="sec-title" id="picks">Top-rated supplements</h2>
-            <p className="sec-sub">Ranked on ingredient quality, dose versus research, transparency, safety and value.</p>
-          </div>
-          <div className="reviewed-by" role="note">
-            <Icon name="check" size={18} />
-            <span>
-              Reviewed by the {SITE_NAME} editorial team using our <Link href="/editorial-policy">published methodology</Link>.
-              No brand pays for placement.
-            </span>
-          </div>
-          <div className="prod-grid">
-            {reviews.slice(0, 8).map((r, i) => <ProductCard key={r.slug} review={r} rank={i + 1} />)}
-          </div>
-        </section>
-        )}
       </div>
 
-      {/* 4. Quiz CTA band */}
-      <section className="sec-alt">
-        <div className="container sec" style={{ display: "grid", gap: 16, justifyItems: "start" }}>
-          <p className="sec-label">Personalized in 60 seconds</p>
-          <h2 className="sec-title">Which supplements actually fit you?</h2>
-          <p className="sec-sub">Five questions about your goals, diet and life stage. You get a shortlist with doses and the guides to read next.</p>
-          <Link className="btn btn-accent" href="/quiz">Start the quiz <Icon name="arrow" size={18} /></Link>
-        </div>
-      </section>
-
-      <div className="container">
-        {/* 5. Ingredient library */}
-        <section className="sec" aria-labelledby="ingr">
-          <div className="sec-head row">
-            <div>
-              <p className="sec-label">Ingredient library</p>
-              <h2 className="sec-title" id="ingr">Evidence-based ingredient guides</h2>
-            </div>
-            <Link href="/ingredients">All ingredients</Link>
+      {/* Quiz promo */}
+      <div className="page">
+        <div className="quizpromo" role="complementary" aria-label="Quiz">
+          <div>
+            <div className="qp-eyebrow">🌟 Free personalised recommendation</div>
+            <div className="qp-title">Not sure which supplement is right for you?</div>
+            <div className="qp-sub">Answer 5 quick questions and get an evidence-ranked shortlist with doses.</div>
           </div>
-          <div className="dir-grid">
-            {ingredients.map((i) => (
-              <Link key={i.slug} href={`/ingredients/${i.slug}`} className="dir-item">
-                <span>{i.name}<small>{i.facts?.Type}</small></span>
-                <Icon name="arrow" size={18} />
+          <Link href="/quiz" className="qp-btn">Take the Free Quiz →</Link>
+        </div>
+      </div>
+
+      {/* Safety box */}
+      <div className="page" style={{ paddingBottom: "2rem" }}>
+        <div className="safety" role="complementary" aria-label="Supplement safety">
+          <div className="safety-head">
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: "1.4rem" }} aria-hidden="true">⚠️</span>
+              <div>
+                <div className="safety-eyebrow">Safety first · No affiliate links</div>
+                <div className="safety-title">Combinations to Avoid</div>
+              </div>
+            </div>
+            <span className="safety-pill">{warnings.length} documented interactions</span>
+          </div>
+          <div className="safety-body">
+            {warnings.slice(0, 4).map((w) => (
+              <div className="safety-row" key={w.a + w.b}>
+                <strong>{w.a} + {w.b}</strong>
+                <span>{w.text}</span>
+              </div>
+            ))}
+            <Link href="/tools/interaction-checker" className="safety-link">Check your own stack in the Interaction Checker →</Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Top picks (only once real reviews exist) */}
+      {reviews.length > 0 && (
+        <div className="page">
+          <section className="sec" aria-labelledby="picks-title" style={{ paddingTop: 0 }}>
+            <div className="sh2">
+              <div className="slbl">Editor&apos;s Top Picks — {month}</div>
+              <h2 className="stit" id="picks-title">Top-Rated Supplements</h2>
+              <p className="ssub">Ranked on ingredient quality, dose versus research, transparency, safety and value.</p>
+            </div>
+            <div className="reviewed-by" role="note">
+              <span aria-hidden="true">📝</span>
+              <span>
+                Reviewed by the <strong>{SITE_NAME} Editorial Team</strong> · Methodology: ingredient analysis, clinical
+                evidence, third-party testing, value · Last updated: <strong>{fullDate}</strong>
+              </span>
+            </div>
+            <div className="pgrid">
+              {reviews.slice(0, 8).map((r, i) => (
+                <article className="pc" key={r.slug}>
+                  <div className="pct">
+                    <div className="pb">#{i + 1} {r.productType}</div>
+                    {r.example && <div className="pb pb-ex">Example</div>}
+                  </div>
+                  <div className="pcb">
+                    <h3 className="pname">{r.name}</h3>
+                    <div className="pcat">★ {Number(r.rating).toFixed(1)}/5</div>
+                    <p className="pdesc">{r.verdict}</p>
+                    {r.chips?.length > 0 && (
+                      <div className="ptrust">{r.chips.map((c) => <span className="tc" key={c}>{c}</span>)}</div>
+                    )}
+                    <Link href={`/reviews/${r.slug}`} className="prev">Read Full Review</Link>
+                    {r.cta && (
+                      <a className="pcta" href={buildStoreUrl(r.cta)} target="_blank" rel="sponsored nofollow noopener">
+                        {r.cta.label} on {storeLabel(r.cta)} →
+                      </a>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
+
+      {/* Ingredient guides */}
+      <div className="band band-alt" role="region" aria-labelledby="ing-title">
+        <div className="page">
+          <div className="sh2">
+            <div className="slbl">Evidence-Based Ingredient Guides</div>
+            <h2 className="stit" id="ing-title">Ingredient Guides with Graded Evidence</h2>
+            <p className="ssub">What&apos;s actually in your supplements? Every guide grades each use from A to D. <Link href="/ingredients">See all ingredients →</Link></p>
+          </div>
+          <div className="ing-grid-home">
+            {ingredients.map((i) => {
+              const g = bestGrade(i);
+              return (
+                <Link key={i.slug} href={`/ingredients/${i.slug}`} className="ing-card-home">
+                  <span className={`ing-grade-dot grade-${g.toLowerCase()}`} aria-label={`Best evidence grade ${g}`}>{g}</span>
+                  <span className="ing-name-home">{i.name}</span>
+                  <span className="ing-cat-home">{i.group}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Comparisons */}
+      <div className="band" role="region" aria-labelledby="compare-title">
+        <div className="page">
+          <div className="sh2">
+            <div className="slbl">X vs Y — Supplement Comparisons</div>
+            <h2 className="stit" id="compare-title">Evidence-Based Supplement Comparisons</h2>
+            <p className="ssub">Supplement forms and alternatives, side by side. <Link href="/compare">See all comparisons →</Link></p>
+          </div>
+          <div className="compare-grid">
+            {compare.map((p) => (
+              <Link key={p.slug} href={`/${p.slug}`} className="comp-card">
+                <span className="comp-vs-wrap">
+                  <span className="comp-a-name">{p.vsA}</span>
+                  <span className="comp-vs-dot">vs</span>
+                  <span className="comp-b-name">{p.vsB}</span>
+                  <span className="comp-verdict">✅ {p.vsVerdict}</span>
+                </span>
+                <span className="comp-arrow" aria-hidden="true">→</span>
               </Link>
             ))}
           </div>
-        </section>
+        </div>
+      </div>
 
-        {/* 6. Comparisons */}
-        <section className="sec" aria-labelledby="cmp">
-          <div className="sec-head row">
-            <div>
-              <p className="sec-label">Head to head</p>
-              <h2 className="sec-title" id="cmp">X vs Y comparisons</h2>
-            </div>
-            <Link href="/compare">All comparisons</Link>
+      {/* Tools */}
+      <div className="band band-dark" role="region" aria-labelledby="tools-title">
+        <div className="page">
+          <div className="sh2">
+            <div className="slbl slbl-dark">Free Supplement Tools</div>
+            <h2 className="stit" id="tools-title" style={{ color: "#fff" }}>{TOOLS.length} Free Tools to Make Smarter Decisions</h2>
+            <p className="ssub" style={{ color: "rgba(255,255,255,.72)" }}>No sign-up required. Everything runs in your browser.</p>
           </div>
-          <div className="grid">
-            {compare.slice(0, 6).map((p) => <PostCard key={p.slug} post={p} />)}
-          </div>
-        </section>
-
-        {/* 7. Tools */}
-        <section className="sec" aria-labelledby="tools">
-          <div className="sec-head row">
-            <div>
-              <p className="sec-label">Free tools</p>
-              <h2 className="sec-title" id="tools">Calculators and checkers</h2>
-            </div>
-            <Link href="/tools">All tools</Link>
-          </div>
-          <div className="tool-grid">
+          <div className="tools-grid">
             {TOOLS.map((t) => (
-              <Link key={t.slug} href={t.href} className="tool-card">
-                <span className="cat-icon"><Icon name={t.icon} /></span>
-                <h3>{t.name}</h3>
-                <p>{t.description}</p>
-                <span className="cta">Open tool <Icon name="arrow" size={16} /></span>
+              <Link key={t.slug} href={t.href} className="tool-card-d">
+                <span className="tool-icon" aria-hidden="true">{t.emoji}</span>
+                <span className="tool-name">{t.name}</span>
+                <span className="tool-desc">{t.description}</span>
+                <span className="tool-badge">● {t.badge}</span>
               </Link>
             ))}
           </div>
-        </section>
-
-        {/* 8. Dosing & safety */}
-        <section className="sec" aria-labelledby="dose">
-          <div className="sec-head row">
-            <div>
-              <p className="sec-label">Dosing & safety</p>
-              <h2 className="sec-title" id="dose">How much, when, and with what</h2>
-            </div>
-            <Link href="/dosing-safety">All dosing guides</Link>
-          </div>
-          <ul className="link-list">
-            {dosing.map((p) => (
-              <li key={p.slug}>
-                <Link href={`/${p.slug}`}><Icon name="pill" size={18} />{p.title.split(/[?:]/)[0]}</Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* 9. Product directory */}
-        {reviews.length > 0 && (
-        <section className="sec" aria-labelledby="dir">
-          <div className="sec-head row">
-            <div>
-              <p className="sec-label">Product directory</p>
-              <h2 className="sec-title" id="dir">All reviewed supplements</h2>
-            </div>
-            <Link href="/all-supplements">Full directory</Link>
-          </div>
-          <div className="dir-grid">
-            {reviews.map((r) => (
-              <Link key={r.slug} href={`/reviews/${r.slug}`} className="dir-item">
-                <span>{r.name}<small>{r.productType}</small></span>
-                <Icon name="arrow" size={18} />
-              </Link>
-            ))}
-          </div>
-        </section>
-        )}
+        </div>
       </div>
 
-      {/* 10. Editorial */}
-      <section className="sec-alt">
-        <div className="container sec">
-          <div className="sec-head">
-            <p className="sec-label">Why trust us</p>
-            <h2 className="sec-title">How we research every page</h2>
+      {/* Dosing & safety */}
+      <div className="band band-alt band-tight" role="region" aria-labelledby="dosing-title">
+        <div className="page">
+          <div className="sh2">
+            <div className="slbl">Dosing &amp; Safety — Clear Answers</div>
+            <h2 className="stit" id="dosing-title">{dosing.length} Dosing &amp; Safety Guides</h2>
+            <p className="ssub">How much, when, and with what, answered with official sources. <Link href="/dosing-safety">See all →</Link></p>
           </div>
-          <div className="editorial-grid">
-            <div>
-              <h3>Evidence graded A to D</h3>
-              <p>Every ingredient guide grades each claimed benefit by the strength of human research, so you can see at a glance what is proven, promising or unsupported.</p>
-            </div>
-            <div>
-              <h3>Doses checked against studies</h3>
-              <p>Many products use a fraction of the dose tested in trials. Our reviews compare each ingredient&apos;s dose with the research and flag underdosed formulas.</p>
-            </div>
-            <div>
-              <h3>Safety first</h3>
-              <p>We list upper limits, side effects and medication interactions on every relevant page, and tell you when to talk to a doctor before buying.</p>
-            </div>
-            <div>
-              <h3>Independent and transparent</h3>
-              <p>Affiliate links keep the site free, but brands can&apos;t pay for rankings. Read our <Link href="/editorial-policy">editorial policy</Link> and <Link href="/affiliate-disclosure">disclosure</Link>.</p>
-            </div>
+          <div className="dose-grid">
+            {dosing.map((p) => (
+              <Link key={p.slug} href={`/${p.slug}`} className="dose-link">
+                <span aria-hidden="true">{p.emoji || "💊"}</span>
+                <span>{p.title.split(/[:]/)[0]}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Directory */}
+      <div className="page">
+        <section className="sec" aria-labelledby="dir-title">
+          <div className="sh2">
+            <div className="slbl">Complete Directory</div>
+            <h2 className="stit" id="dir-title">Everything We Cover, A to Z</h2>
+            <p className="ssub">Every review, ingredient and guide on the site. Updated {month}.</p>
+          </div>
+          <DirectoryFilter
+            noun="pages"
+            items={[
+              ...reviews.map((r) => ({ href: `/reviews/${r.slug}`, label: r.name, sub: `Review · ${r.productType}` })),
+              ...ingredients.map((i) => ({ href: `/ingredients/${i.slug}`, label: i.name, sub: `Ingredient · ${i.group}` })),
+              ...posts.map((p) => ({ href: `/${p.slug}`, label: p.title.split(/[:?]/)[0], sub: p.category === "compare" ? "Comparison" : "Dosing & safety" })),
+            ].sort((a, b) => a.label.localeCompare(b.label))}
+          />
+        </section>
+      </div>
+
+      {/* Quiz nudge */}
+      <div className="page" style={{ paddingBottom: "1.5rem" }}>
+        <div className="quiznudge">
+          🌟 <strong>Not sure where to start?</strong> Answer 5 quick questions and get a shortlist matched to your goal.{" "}
+          <Link href="/quiz">Take the free quiz →</Link>
+        </div>
+      </div>
+
+      {/* Editorial */}
+      <section className="editorial" aria-labelledby="editorial-title">
+        <div className="page">
+          <div className="ei">
+            <div className="slbl">Editorial Standards — {month}</div>
+            <h2 id="editorial-title">Why {SITE_NAME} Is a Supplement Resource You Can Check</h2>
+            <p>
+              Supplement marketing is full of big promises and small doses. We built {SITE_NAME} to do the opposite:
+              show the evidence behind every claim, say plainly when it&apos;s weak, and make the safety information as easy to
+              find as the buying advice.
+            </p>
+            <h3>Ingredient library graded A to D</h3>
+            <p>
+              Each <Link href="/ingredients">ingredient guide</Link> lists the uses people buy it for and grades the human
+              evidence for each one, alongside official daily targets, upper limits and interactions.
+            </p>
+            <h3>Comparisons that pick a winner for each situation</h3>
+            <p>
+              Our <Link href="/compare">X vs Y comparisons</Link> line up form, dose, absorption, evidence and cost, then tell
+              you which option suits which goal instead of hedging.
+            </p>
+            <h3>Free tools, no sign-up</h3>
+            <p>
+              The <Link href="/tools">tools</Link> check interactions, calculate doses and compare real cost per dose. They run
+              in your browser and store nothing.
+            </p>
+            <h3>Our editorial standards and independence</h3>
+            <p>
+              Brands can&apos;t pay for rankings or reviews. Affiliate links fund the site and are always marked. Read our{" "}
+              <Link href="/editorial-policy">editorial policy</Link> and <Link href="/affiliate-disclosure">affiliate disclosure</Link>.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* 11. FAQ */}
-      <div className="container sec" style={{ maxWidth: "var(--prose)" }}>
-        <p className="sec-label">FAQ</p>
-        <Faq faq={HOME_FAQ} />
+      {/* FAQ */}
+      <div className="page">
+        <section className="sec" aria-labelledby="faq-title">
+          <div className="sh2">
+            <div className="slbl">Frequently Asked Questions</div>
+            <h2 className="stit" id="faq-title">Common Supplement Questions</h2>
+          </div>
+          <div className="faqlist">
+            {HOME_FAQ.map((f) => (
+              <details className="fqi" key={f.q}>
+                <summary className="fqq">{f.q}</summary>
+                <div className="fqa">{f.a}</div>
+              </details>
+            ))}
+          </div>
+        </section>
       </div>
     </>
   );

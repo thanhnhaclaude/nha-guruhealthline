@@ -3,6 +3,7 @@ title: "Best Time to Take Vitamin D: Morning, Night, or With Meals?"
 seoTitle: "Best Time to Take Vitamin D: Morning or Night?"
 description: "The best time to take vitamin D is with a meal that contains fat, whenever you'll remember it. Here's what the research says about morning vs night and sleep."
 category: dosing
+emoji: "☀️"
 topics: [bone-health, immune-system]
 date: 2026-10-14
 updated: 2026-10-14

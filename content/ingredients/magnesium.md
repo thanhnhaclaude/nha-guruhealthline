@@ -1,5 +1,6 @@
 ---
 name: Magnesium
+group: Minerals
 title: "Magnesium Supplements: Benefits, Forms, Dosage and Safety"
 seoTitle: "Magnesium Supplements: Benefits, Forms & Dosage"
 description: "Magnesium supports muscles, nerves, blood sugar and sleep. See which benefits have real evidence, how the forms differ, and how much is safe to take."

@@ -1,47 +1,41 @@
 import Link from "next/link";
 import { NAV, NAV_CTA, SITE_NAME } from "@/lib/site";
-import Icon from "./Icon";
 import Logo from "./Logo";
 
 export default function Header() {
   return (
-    <header className="site-header">
-      <div className="container header-inner">
-        <Link href="/" className="brand" aria-label={`${SITE_NAME} home`}>
+    <header className="sh">
+      <div className="shi">
+        <Link href="/" className="logo" aria-label={`${SITE_NAME} home`}>
           <Logo />
-          <span>{SITE_NAME}</span>
         </Link>
-        <nav className="desktop-nav" aria-label="Main">
+        <nav className="snav" aria-label="Main">
           {NAV.map((n) => (
             <Link key={n.href} href={n.href}>
-              {n.icon && <Icon name={n.icon} size={16} />}
+              {n.emoji && <span aria-hidden="true">{n.emoji} </span>}
               {n.label}
             </Link>
           ))}
-          <Link href={NAV_CTA.href} className="nav-cta">
-            {NAV_CTA.label}
-            <Icon name="arrow" size={16} />
-          </Link>
+          <Link href={NAV_CTA.href} className="ncta">{NAV_CTA.label} →</Link>
         </nav>
-        <div className="header-actions">
-          <Link href="/search" className="icon-btn" aria-label="Search">
-            <Icon name="search" />
+        <div className="sh-actions">
+          <Link href="/search" className="sh-icon" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2l-4.4-4.4" />
+            </svg>
           </Link>
-          <details className="mobile-nav">
+          <details className="mnav">
             <summary aria-label="Open menu">
-              <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
+              <span /><span /><span />
             </summary>
             <nav aria-label="Mobile">
               {NAV.map((n) => (
                 <Link key={n.href} href={n.href}>
+                  {n.emoji && <span aria-hidden="true">{n.emoji} </span>}
                   {n.label}
                 </Link>
               ))}
-              <Link href={NAV_CTA.href} className="nav-cta">
-                {NAV_CTA.label}
-              </Link>
+              <Link href={NAV_CTA.href} className="ncta">{NAV_CTA.label} →</Link>
             </nav>
           </details>
         </div>

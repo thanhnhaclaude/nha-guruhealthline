@@ -1,5 +1,6 @@
 ---
 name: Zinc
+group: Minerals
 title: "Zinc Supplements: Benefits, Daily Dosage and Side Effects"
 seoTitle: "Zinc Supplements: Benefits, Dosage & Side Effects"
 description: "Adults need 8–11 mg of zinc a day; supplements shouldn't push you past 40 mg. See what zinc does, who runs low, the best forms and the risks."

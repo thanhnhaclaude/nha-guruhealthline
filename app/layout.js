@@ -1,12 +1,12 @@
-import { Figtree, Noto_Sans } from "next/font/google";
+import { DM_Sans, Playfair_Display } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { IS_PRODUCTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const heading = Figtree({ subsets: ["latin"], variable: "--font-heading", display: "swap" });
-const body = Noto_Sans({ subsets: ["latin"], variable: "--font-body", display: "swap" });
+const heading = Playfair_Display({ subsets: ["latin"], weight: ["700", "900"], style: ["normal", "italic"], variable: "--font-heading", display: "swap" });
+const body = DM_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-body", display: "swap" });
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
@@ -19,10 +19,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbfaf7" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f1512" },
-  ],
+  themeColor: "#1a7a4a",
 };
 
 export default function RootLayout({ children }) {

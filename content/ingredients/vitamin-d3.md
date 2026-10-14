@@ -1,5 +1,6 @@
 ---
 name: Vitamin D3
+group: Vitamins
 title: "Vitamin D3 Supplements: Benefits, Dosage, Deficiency and Safety"
 seoTitle: "Vitamin D3 Supplements: Benefits, Dosage & Safety"
 description: "Vitamin D3 helps you absorb calcium and supports bones and immunity. Learn who needs a supplement, safe daily doses, and when to test your levels."
