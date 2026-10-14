@@ -8,6 +8,15 @@ const nextConfig = {
   poweredByHeader: false,
   trailingSlash: false,
   images: { formats: ["image/avif", "image/webp"] },
+  // Moved or merged URLs: permanent (301/308) redirects consolidate ranking signals.
+  async redirects() {
+    return [
+      { source: "/category/dosing", destination: "/dosing-safety", permanent: true },
+      { source: "/category/compare", destination: "/compare", permanent: true },
+      { source: "/category/ingredients", destination: "/ingredients", permanent: true },
+      { source: "/zinc-benefits-dosage-side-effects", destination: "/ingredients/zinc", permanent: true },
+    ];
+  },
   async headers() {
     const securityHeaders = [
       { key: "X-Content-Type-Options", value: "nosniff" },

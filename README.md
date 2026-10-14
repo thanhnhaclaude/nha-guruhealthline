@@ -52,6 +52,20 @@ Nội dung Markdown. Dùng ## cho H2 (tự sinh mục lục), có hỗ trợ b�
 
 Chạy `npm run check:seo` trước mỗi lần push.
 
+### Các loại nội dung khác
+
+| Thư mục | URL | Ghi chú |
+|---|---|---|
+| `content/posts/` | `/<slug>` | Hướng dẫn liều dùng (`category: dosing`) và so sánh (`category: compare`) |
+| `content/ingredients/` | `/ingredients/<slug>` | Thêm `name`, `facts` (thông tin nhanh) và `evidence` (bảng xếp hạng bằng chứng A–D) |
+| `content/reviews/` | `/reviews/<slug>` | Thêm `rating`, `scores` (5 tiêu chí), `pros`, `cons`, `goodFor`, `skipIf`, `ingredients`, `cta`. Xem file mẫu `example-*.md` |
+| `lib/topics.js` | `/<chủ-đề>` | 18 mục tiêu sức khỏe; gắn bài vào chủ đề bằng `topics: [sleep, ...]` |
+| `lib/tools.js` | `/tools/...` | Danh sách công cụ |
+
+Review có `example: true` là **bản mẫu bố cục**. Chúng chỉ hiện ở development và soft-launch, tự biến mất khi `SITE_STAGE=production`. Hãy thay bằng review sản phẩm thật, và chỉ ghi những gì bạn thực sự đã kiểm tra.
+
+Trang chủ đề chưa có bài nào sẽ tự động bị `noindex` và không nằm trong sitemap, để tránh trang mỏng.
+
 ## Ba giai đoạn lập chỉ mục (biến `SITE_STAGE`)
 
 | Giá trị | Meta robots | Header X-Robots-Tag | robots.txt |

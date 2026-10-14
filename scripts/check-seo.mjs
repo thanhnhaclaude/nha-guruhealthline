@@ -1,4 +1,4 @@
-// SEO lint for content/posts/*.md, based on Google's SEO Starter Guide:
+// SEO lint for content/posts and content/ingredients, based on Google's SEO Starter Guide:
 // unique & descriptive titles, page-specific meta descriptions, descriptive URLs,
 // descriptive link text, image alt text, and no keyword stuffing.
 // Run: npm run check:seo
@@ -6,22 +6,32 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 
-const dir = path.join(process.cwd(), "content", "posts");
-const pagesDir = path.join(process.cwd(), "content", "pages");
-const files = fs.readdirSync(dir).filter((f) => f.endsWith(".md"));
+const C = path.join(process.cwd(), "content");
+const list = (d) => (fs.existsSync(path.join(C, d)) ? fs.readdirSync(path.join(C, d)).filter((f) => f.endsWith(".md")) : []);
+const strip = (f) => f.replace(/\.md$/, "");
+const { TOPICS } = await import("../lib/topics.js");
+const { TOOLS } = await import("../lib/tools.js");
+
+// Linted content: guides at /<slug> and ingredient pages at /ingredients/<slug>.
+const files = [
+  ...list("posts").map((f) => ({ file: path.join(C, "posts", f), slug: strip(f) })),
+  ...list("ingredients").map((f) => ({ file: path.join(C, "ingredients", f), slug: `ingredients/${strip(f)}` })),
+];
 const knownSlugs = new Set([
-  ...files.map((f) => f.replace(/\.md$/, "")),
-  ...fs.readdirSync(pagesDir).map((f) => f.replace(/\.md$/, "")),
-  "category/dosing", "category/compare", "category/ingredients",
+  ...files.map((f) => f.slug),
+  ...list("pages").map(strip),
+  ...list("reviews").map((f) => `reviews/${strip(f)}`),
+  ...TOPICS.map((t) => t.slug),
+  ...TOOLS.map((t) => t.href.slice(1)),
+  "ingredients", "compare", "dosing-safety", "tools", "reviews", "all-supplements", "quiz", "search",
 ]);
 
 const seen = { title: new Map(), desc: new Map() };
 let errors = 0;
 let warnings = 0;
 
-for (const file of files) {
-  const slug = file.replace(/\.md$/, "");
-  const { data, content } = matter(fs.readFileSync(path.join(dir, file), "utf8"));
+for (const { file, slug } of files) {
+  const { data, content } = matter(fs.readFileSync(file, "utf8"));
   const issues = [];
   const err = (m) => { issues.push(`  ✖ ${m}`); errors++; };
   const warn = (m) => { issues.push(`  ⚠ ${m}`); warnings++; };
@@ -48,7 +58,7 @@ for (const file of files) {
     const density = (hits * kwWords.length * 100) / words.length;
     if (density > 2.5) err(`keyword density ${density.toFixed(1)}% looks like stuffing (> 2.5%)`);
   }
-  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) err(`URL slug "${slug}" should be lowercase words joined by hyphens`);
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug.split("/").pop())) err(`URL slug "${slug}" should be lowercase words joined by hyphens`);
   if (!data.sources?.length) warn("no sources cited (important for health/YMYL topics)");
   if (!data.date || !data.updated) warn("missing date or updated");
 

@@ -1,8 +1,28 @@
 ---
+name: Zinc
 title: "Zinc Supplements: Benefits, Daily Dosage and Side Effects"
 seoTitle: "Zinc Supplements: Benefits, Dosage & Side Effects"
 description: "Adults need 8–11 mg of zinc a day; supplements shouldn't push you past 40 mg. See what zinc does, who runs low, the best forms and the risks."
-category: ingredients
+topics: [immune-system, mens-health, hair-skin-nails]
+facts:
+  Type: Essential trace mineral
+  Adult RDA: "8 mg (women), 11 mg (men)"
+  Upper limit: "40 mg/day from all sources"
+  Common forms: Picolinate, gluconate, citrate, acetate, oxide
+  Best taken: With a light meal, apart from iron and calcium
+evidence:
+  - use: Correcting zinc deficiency
+    grade: A
+    note: Supplements reliably restore levels when intake or absorption is low.
+  - use: Shortening the common cold (lozenges)
+    grade: B
+    note: Some meta-analyses show shorter colds when started within 24 hours; results vary.
+  - use: Preventing colds with daily pills
+    grade: C
+    note: Not clearly supported in well-nourished adults.
+  - use: Acne
+    grade: C
+    note: Small trials suggest a modest benefit; less effective than standard treatments.
 date: 2026-10-14
 updated: 2026-10-14
 author: editorial

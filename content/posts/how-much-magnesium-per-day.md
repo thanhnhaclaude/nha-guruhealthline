@@ -3,6 +3,7 @@ title: "How Much Magnesium Per Day? Daily Needs by Age, Sex and Goal"
 seoTitle: "How Much Magnesium Per Day? Needs by Age & Sex"
 description: "Adults need 310–420 mg of magnesium a day from all sources. Learn your exact target, the 350 mg supplement limit, and how to tell if you need more."
 category: dosing
+topics: [sleep, heart-health, stress-mood]
 date: 2026-10-14
 updated: 2026-10-14
 author: editorial

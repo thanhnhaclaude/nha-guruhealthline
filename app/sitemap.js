@@ -1,26 +1,24 @@
-import { getAllPages, getAllPosts } from "@/lib/content";
-import { CATEGORIES, absoluteUrl } from "@/lib/site";
+import { getAllIngredients, getAllPages, getAllPosts, getAllReviews, getTopicItems } from "@/lib/content";
+import { absoluteUrl } from "@/lib/site";
+import { TOPICS } from "@/lib/topics";
+import { TOOLS } from "@/lib/tools";
 
 export default function sitemap() {
   const posts = getAllPosts().filter((p) => !p.noindex);
   const latest = posts[0]?.updated || posts[0]?.date;
+  const entry = (path, lastModified, priority) => ({ url: absoluteUrl(path), lastModified, priority });
 
   return [
-    { url: absoluteUrl("/"), lastModified: latest, changeFrequency: "weekly", priority: 1 },
-    ...Object.keys(CATEGORIES).map((c) => ({
-      url: absoluteUrl(`/category/${c}`),
-      lastModified: latest,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    })),
-    ...posts.map((p) => ({
-      url: absoluteUrl(`/${p.slug}`),
-      lastModified: p.updated || p.date,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    })),
-    ...getAllPages()
-      .filter((p) => !p.noindex)
-      .map((p) => ({ url: absoluteUrl(`/${p.slug}`), lastModified: p.updated, priority: 0.3 })),
+    entry("/", latest, 1),
+    ...["/ingredients", "/compare", "/dosing-safety", "/tools", "/reviews", "/all-supplements"].map((p) => entry(p, latest, 0.8)),
+    ...TOPICS.filter((t) => {
+      const it = getTopicItems(t.slug);
+      return it.guides.length + it.ingredients.length + it.reviews.length > 0; // empty hubs are noindex
+    }).map((t) => entry(`/${t.slug}`, latest, 0.7)),
+    ...posts.map((p) => entry(`/${p.slug}`, p.updated || p.date, 0.8)),
+    ...getAllIngredients().map((i) => entry(`/ingredients/${i.slug}`, i.updated || i.date, 0.8)),
+    ...getAllReviews({ includeExamples: false }).filter((r) => !r.noindex).map((r) => entry(`/reviews/${r.slug}`, r.updated || r.date, 0.8)),
+    ...TOOLS.map((t) => entry(t.href, latest, 0.6)),
+    ...getAllPages().filter((p) => !p.noindex).map((p) => entry(`/${p.slug}`, p.updated, 0.3)),
   ];
 }

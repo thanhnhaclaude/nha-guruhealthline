@@ -1,29 +1,47 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
+import ProductCard from "@/components/ProductCard";
 import ProductPicks from "@/components/ProductPicks";
 import PostCard, { formatDate } from "@/components/PostCard";
-import { getAllPages, getAllPosts, getPage, getPost, getToc, renderMarkdown } from "@/lib/content";
+import { AnswerBox, AuthorBox, Breadcrumbs, Byline, Faq, Sources, Toc, breadcrumbSchema, faqSchema } from "@/components/ArticleParts";
+import { getAllPages, getAllPosts, getPage, getPost, getToc, getTopicItems, renderMarkdown } from "@/lib/content";
 import { getAuthor } from "@/lib/authors";
 import { CATEGORIES, SITE_NAME, absoluteUrl } from "@/lib/site";
+import { TOPICS, getTopic } from "@/lib/topics";
 
 export const dynamicParams = false;
 
+// One top-level namespace, like the original site: /<guide>, /<page>, /<health-goal>.
 export function generateStaticParams() {
-  return [...getAllPosts(), ...getAllPages()].map((p) => ({ slug: p.slug }));
+  return [...getAllPosts(), ...getAllPages(), ...TOPICS].map((p) => ({ slug: p.slug }));
 }
+
+const topicCount = (slug) => {
+  const it = getTopicItems(slug);
+  return it.guides.length + it.ingredients.length + it.reviews.length;
+};
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
+  const topic = getTopic(slug);
+  if (topic) {
+    return {
+      title: `Best Supplements for ${topic.name}: Evidence-Based Guide`,
+      description: `${topic.blurb} Ingredient guides, comparisons and reviews for ${topic.name.toLowerCase()}.`,
+      alternates: { canonical: `/${slug}` },
+      // An empty hub is a thin page: keep it out of search until it has content.
+      ...(topicCount(slug) === 0 ? { robots: { index: false, follow: true } } : {}),
+    };
+  }
   const doc = getPost(slug) || getPage(slug);
   if (!doc) return {};
   const url = `/${doc.slug}`;
   return {
-    // Unique, descriptive <title> and meta description per page (Google SEO Starter Guide).
     title: doc.seoTitle || doc.title,
     description: doc.description,
     alternates: { canonical: url },
-    // Per-page noindex for pages that are published but not meant for search (Microsoft guidance).
     ...(doc.noindex ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type: doc.category ? "article" : "website",
@@ -37,6 +55,8 @@ export async function generateMetadata({ params }) {
 
 export default async function DocPage({ params }) {
   const { slug } = await params;
+  const topic = getTopic(slug);
+  if (topic) return <TopicHub topic={topic} />;
   const post = getPost(slug);
   if (post) return <Article post={post} />;
   const page = getPage(slug);
@@ -51,6 +71,78 @@ export default async function DocPage({ params }) {
   );
 }
 
+function TopicHub({ topic }) {
+  const { guides, ingredients, reviews } = getTopicItems(topic.slug);
+  const crumbs = [{ label: "Home", href: "/" }, { label: topic.name, href: `/${topic.slug}` }];
+  const empty = !guides.length && !ingredients.length && !reviews.length;
+  return (
+    <>
+      <JsonLd
+        data={[
+          breadcrumbSchema(crumbs, absoluteUrl),
+          { "@context": "https://schema.org", "@type": "CollectionPage", name: `Supplements for ${topic.name}`, url: absoluteUrl(`/${topic.slug}`) },
+        ]}
+      />
+      <section className="review-hero">
+        <div className="container">
+          <Breadcrumbs items={crumbs} />
+          <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+            <span className="cat-icon" style={{ width: 52, height: 52 }}><Icon name={topic.icon} size={28} /></span>
+            <h1 style={{ margin: 0 }}>Supplements for {topic.name}</h1>
+          </div>
+          <p className="sec-sub" style={{ marginTop: 14 }}>{topic.blurb}</p>
+        </div>
+      </section>
+      <div className="container">
+        {reviews.length > 0 && (
+          <section className="sec">
+            <h2 className="sec-title">Top-rated products</h2>
+            <div className="prod-grid">{reviews.map((r, i) => <ProductCard key={r.slug} review={r} rank={i + 1} />)}</div>
+          </section>
+        )}
+        {ingredients.length > 0 && (
+          <section className="sec">
+            <h2 className="sec-title">Key ingredients</h2>
+            <div className="dir-grid">
+              {ingredients.map((i) => (
+                <Link key={i.slug} href={`/ingredients/${i.slug}`} className="dir-item">
+                  <span>{i.name}<small>{i.evidence?.find((e) => e.grade <= "B")?.use || i.facts?.Type}</small></span>
+                  <Icon name="arrow" size={18} />
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+        {guides.length > 0 && (
+          <section className="sec">
+            <h2 className="sec-title">Guides & comparisons</h2>
+            <div className="grid">{guides.map((p) => <PostCard key={p.slug} post={p} />)}</div>
+          </section>
+        )}
+        {empty && (
+          <section className="sec">
+            <p className="muted">
+              Our {topic.name.toLowerCase()} guides are being researched. Meanwhile, try the{" "}
+              <Link href="/quiz">supplement quiz</Link> or browse the <Link href="/ingredients">ingredient library</Link>.
+            </p>
+          </section>
+        )}
+        <section className="sec">
+          <h2 className="sec-title">Other health goals</h2>
+          <div className="cat-grid">
+            {TOPICS.filter((t) => t.slug !== topic.slug).slice(0, 8).map((t) => (
+              <Link key={t.slug} href={`/${t.slug}`} className="cat-card">
+                <span className="cat-icon"><Icon name={t.icon} /></span>
+                <span className="cat-name">{t.name}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </div>
+    </>
+  );
+}
+
 async function Article({ post }) {
   const html = await renderMarkdown(post.body);
   const toc = getToc(post.body);
@@ -60,6 +152,11 @@ async function Article({ post }) {
     .filter((p) => p.slug !== post.slug && (p.category === post.category || p.related?.includes(post.slug)))
     .slice(0, 3);
   const url = absoluteUrl(`/${post.slug}`);
+  const crumbs = [
+    { label: "Home", href: "/" },
+    { label: category.name, href: category.href },
+    { label: post.title, href: `/${post.slug}` },
+  ];
 
   const schema = [
     {
@@ -74,59 +171,25 @@ async function Article({ post }) {
       publisher: { "@type": "Organization", name: SITE_NAME, logo: { "@type": "ImageObject", url: absoluteUrl("/icon.svg") } },
       ...(post.sources?.length ? { citation: post.sources.map((s) => s.url) } : {}),
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
-        { "@type": "ListItem", position: 2, name: category.name, item: absoluteUrl(`/category/${post.category}`) },
-        { "@type": "ListItem", position: 3, name: post.title, item: url },
-      ],
-    },
-  ];
-  if (post.faq?.length) {
-    schema.push({
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: post.faq.map((f) => ({
-        "@type": "Question",
-        name: f.q,
-        acceptedAnswer: { "@type": "Answer", text: f.a },
-      })),
-    });
-  }
+    breadcrumbSchema(crumbs, absoluteUrl),
+    faqSchema(post.faq),
+  ].filter(Boolean);
 
   return (
     <div className="container">
       <JsonLd data={schema} />
       <div className="article-layout">
         <article>
-          <nav className="breadcrumbs" aria-label="Breadcrumb">
-            <ol>
-              <li><Link href="/">Home</Link></li>
-              <li><Link href={`/category/${post.category}`}>{category.name}</Link></li>
-              <li aria-current="page">{post.title}</li>
-            </ol>
-          </nav>
+          <Breadcrumbs items={crumbs} />
           <h1>{post.title}</h1>
-          <div className="byline">
-            <span>By <Link href={author.url}>{author.name}</Link></span>
-            <span>Updated <time dateTime={post.updated || post.date}>{formatDate(post.updated || post.date)}</time></span>
-            <span>{post.readingMinutes} min read</span>
-            {post.sources?.length > 0 && <span>{post.sources.length} sources cited</span>}
-          </div>
+          <Byline doc={post} />
           {post.products?.length > 0 && (
             <p className="disclosure">
               We may earn a commission from links on this page, at no cost to you.{" "}
               <Link href="/affiliate-disclosure">How we make money</Link>.
             </p>
           )}
-          {post.answer && (
-            <div className="answer-box">
-              <strong>Quick answer</strong>
-              <p>{post.answer}</p>
-            </div>
-          )}
+          <AnswerBox text={post.answer} />
           <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
 
           {post.products?.length > 0 && (
@@ -139,65 +202,19 @@ async function Article({ post }) {
               <ProductPicks products={post.products} />
             </section>
           )}
-
-          {post.faq?.length > 0 && (
-            <section className="prose faq">
-              <h2 id="faq">Frequently asked questions</h2>
-              {post.faq.map((f) => (
-                <details key={f.q}>
-                  <summary>{f.q}</summary>
-                  <div><p>{f.a}</p></div>
-                </details>
-              ))}
-            </section>
-          )}
-
-          {post.sources?.length > 0 && (
-            <section className="prose sources">
-              <h2 id="sources">Sources</h2>
-              <ol>
-                {post.sources.map((s) => (
-                  <li key={s.url}>
-                    <a href={s.url} target="_blank" rel="noopener">{s.title}</a>
-                  </li>
-                ))}
-              </ol>
-            </section>
-          )}
-
-          <aside className="author-box" aria-label="About the author">
-            <span className="avatar" aria-hidden="true">{author.initials}</span>
-            <div>
-              <strong>{author.name}</strong>
-              <p className="muted small" style={{ margin: 0 }}>{author.bio}</p>
-            </div>
-          </aside>
-          <p className="muted small" style={{ marginTop: 16 }}>
-            This article is for education and is not a substitute for advice from your doctor. Read our{" "}
-            <Link href="/medical-disclaimer">medical disclaimer</Link>.
-          </p>
+          <Faq faq={post.faq} />
+          <Sources sources={post.sources} />
+          <AuthorBox doc={post} />
         </article>
-
-        {toc.length > 2 && (
-          <aside>
-            <nav className="toc" aria-label="On this page">
-              <p>On this page</p>
-              <ol>
-                {toc.map((h) => (
-                  <li key={h.id}><a href={`#${h.id}`}>{h.text}</a></li>
-                ))}
-              </ol>
-            </nav>
-          </aside>
-        )}
+        <aside>
+          <div className="sticky-side"><Toc toc={toc} /></div>
+        </aside>
       </div>
 
       {related.length > 0 && (
         <section className="section">
           <h2>Related guides</h2>
-          <div className="grid">
-            {related.map((p) => <PostCard key={p.slug} post={p} />)}
-          </div>
+          <div className="grid">{related.map((p) => <PostCard key={p.slug} post={p} />)}</div>
         </section>
       )}
     </div>
