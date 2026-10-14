@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <ToolPage
       slug="cost-per-dose"
-      intro="Enter the price, servings and active amount of two products to see what your daily dose really costs."
+      intro={"Enter the price, servings and active amount of two products to see what your daily dose really costs."}
       faq={FAQ}
     >
       <CostPerDose />

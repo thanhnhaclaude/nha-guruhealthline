@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <ToolPage
       slug="dose-calculator"
-      intro="Choose your sex and age to see the official daily target and safe upper limit for 13 common nutrients."
+      intro={"Choose your sex and age to see the official daily target and safe upper limit for 13 common nutrients."}
       faq={FAQ}
       sources={[{ title: "NIH Office of Dietary Supplements: Nutrient Recommendations and Databases", url: "https://ods.od.nih.gov/HealthInformation/nutrientrecommendations.aspx" }]}
     >

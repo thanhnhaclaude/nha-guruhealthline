@@ -16,6 +16,11 @@ const nextConfig = {
       { source: "/category/compare", destination: "/compare", permanent: true },
       { source: "/category/ingredients", destination: "/ingredients", permanent: true },
       { source: "/zinc-benefits-dosage-side-effects", destination: "/ingredients/zinc", permanent: true },
+      // The original site had near-duplicate URLs competing for one keyword
+      // (keyword cannibalization). Keep the URLs but consolidate into one page.
+      { source: "/magnesium-vs-melatonin-for-sleep", destination: "/melatonin-vs-magnesium-for-sleep/", permanent: true },
+      { source: "/zinc-vs-zinc-picolinate", destination: "/zinc-picolinate-vs-gluconate/", permanent: true },
+      { source: "/vitamin-d3-vs-k2", destination: "/can-you-take-vitamin-d-and-k2-together/", permanent: true },
     ];
   },
   async headers() {

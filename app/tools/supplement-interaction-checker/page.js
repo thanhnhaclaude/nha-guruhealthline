@@ -13,7 +13,7 @@ export default function Page() {
   return (
     <ToolPage
       slug="interaction-checker"
-      intro="Tick the supplements and medications you take. You'll see which pairs compete for absorption, need spacing, or shouldn't be combined."
+      intro={"Tick the supplements and medications you take. You'll see which pairs compete for absorption, need spacing, or shouldn't be combined."}
       faq={FAQ}
       sources={INTERACTION_SOURCES}
     >

@@ -259,7 +259,7 @@ export default function Home() {
             <p className="ssub">Supplement forms and alternatives, side by side.</p>
           </div>
           <div className="compare-grid">
-            {compare.map((p) => (
+            {compare.slice(0, 12).map((p) => (
               <Link key={p.slug} href={`/${p.slug}`} className="comp-card">
                 <span className="comp-vs-wrap">
                   <span className="comp-a-name">{p.vsA}</span>

@@ -33,14 +33,14 @@ export default function Footer() {
               <li><Link href="/ingredients">All ingredients</Link></li>
               {ingredients.map((i) => <li key={i.slug}><Link href={`/ingredients/${i.slug}`}>{i.name}</Link></li>)}
               <li><Link href="/compare">All comparisons</Link></li>
-              {compare.map((p) => <li key={p.slug}><Link href={`/${p.slug}`}>{p.vsA} vs {p.vsB}</Link></li>)}
+              {compare.slice(0, 6).map((p) => <li key={p.slug}><Link href={`/${p.slug}`}>{p.vsA} vs {p.vsB}</Link></li>)}
             </ul>
           </div>
           <div>
             <div className="ftcolt">Tools &amp; Info</div>
             <ul className="ftlinks">
               <li><Link href="/tools">All free tools</Link></li>
-              {TOOLS.map((t) => <li key={t.slug}><Link href={t.href}>{t.short}</Link></li>)}
+              {TOOLS.slice(0, 8).map((t) => <li key={t.slug}><Link href={t.href}>{t.short}</Link></li>)}
               <li><Link href="/dosing-safety">Dosing &amp; safety</Link></li>
               <li><Link href="/reviews">Reviews</Link></li>
               <li><Link href="/about">About us</Link></li>

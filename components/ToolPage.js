@@ -33,9 +33,9 @@ export default function ToolPage({ slug, intro, children, faq, sources, after })
       <section className="sec">
         <h2 className="sec-title">More free tools</h2>
         <div className="tool-grid">
-          {TOOLS.filter((x) => x.slug !== slug).map((x) => (
+          {TOOLS.filter((x) => x.slug !== slug).slice(0, 6).map((x) => (
             <Link key={x.slug} href={x.href} className="tool-card">
-              <span className="cat-icon"><Icon name={x.icon} /></span>
+              <span className="cat-icon" aria-hidden="true" style={{ fontSize: 20 }}>{x.emoji}</span>
               <h3>{x.name}</h3>
               <span className="cta">Open <Icon name="arrow" size={16} /></span>
             </Link>
