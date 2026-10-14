@@ -1,10 +1,10 @@
 ---
 title: Medical Disclaimer
-description: NutriVerdict content is for education only and is not a substitute for professional medical advice.
+description: GuruHealthline content is for education only and is not a substitute for professional medical advice.
 updated: 2026-10-14
 ---
 
-The content on NutriVerdict is for general education. It is **not** medical advice, diagnosis or treatment.
+The content on GuruHealthline is for general education. It is **not** medical advice, diagnosis or treatment.
 
 - Talk to a doctor, pharmacist or registered dietitian before starting any supplement.
 - This is especially important if you are pregnant or breastfeeding, have a medical condition such as kidney or liver disease, take prescription medication, or are planning surgery.

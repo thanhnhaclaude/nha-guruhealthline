@@ -1,4 +1,4 @@
-# NutriVerdict
+# GuruHealthline
 
 Website hướng dẫn thực phẩm bổ sung dựa trên bằng chứng. Dựng bằng **Next.js 16** (Node.js), bài viết là file **Markdown**, deploy lên **Hostinger Node.js Web App** từ GitHub.
 
@@ -82,14 +82,14 @@ Lưu ý: không dùng `Disallow` để chặn trong giai đoạn phát triển. 
 2. Trong thư mục dự án:
 
 ```bash
-git remote add origin https://github.com/<tai-khoan>/nutriverdict.git
+git remote add origin https://github.com/<tai-khoan>/guruhealthline.git
 git push -u origin main
 ```
 
 ## Deploy lên Hostinger (gói Business/Cloud)
 
 1. hPanel → **Websites** → **Add website** → **Node.js Apps**.
-2. Chọn **Import Git repository**, kết nối GitHub và chọn repo `nutriverdict`, nhánh `main`.
+2. Chọn **Import Git repository**, kết nối GitHub và chọn repo `guruhealthline`, nhánh `main`.
 3. Cấu hình build (thường được nhận diện tự động là Next.js):
    - Node.js version: **22.x** (tối thiểu 20.9)
    - Build command: `npm run build`
@@ -101,8 +101,8 @@ git push -u origin main
 
 ### Checklist trước khi chuyển sang production
 
-- [ ] Thay "NutriVerdict Editorial Team" trong `lib/authors.js` bằng tác giả thật có chuyên môn
-- [ ] Sửa email `editor@yourdomain.com` trong `content/pages/`
+- [ ] Thay "GuruHealthline Editorial Team" trong `lib/authors.js` bằng tác giả thật có chuyên môn
+- [ ] Sửa email `editor@guruhealthline.com` trong `content/pages/`
 - [ ] Đã được duyệt Amazon Associates và điền `AMAZON_TAG`
 - [ ] Bấm thử mọi link nguồn ở cuối mỗi bài
 - [ ] Đổi `SITE_STAGE=production` rồi redeploy

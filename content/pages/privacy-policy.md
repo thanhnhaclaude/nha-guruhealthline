@@ -1,6 +1,6 @@
 ---
 title: Privacy Policy
-description: What data NutriVerdict collects, why, and the choices you have.
+description: What data GuruHealthline collects, why, and the choices you have.
 updated: 2026-10-14
 ---
 
@@ -8,7 +8,7 @@ updated: 2026-10-14
 
 ## What we collect
 
-NutriVerdict doesn't require an account and doesn't sell personal data. Our hosting provider keeps standard server logs (IP address, browser type, pages visited) for security and troubleshooting.
+GuruHealthline doesn't require an account and doesn't sell personal data. Our hosting provider keeps standard server logs (IP address, browser type, pages visited) for security and troubleshooting.
 
 ## Affiliate links
 
@@ -20,4 +20,4 @@ If we add analytics, we'll list the provider here and offer a way to opt out.
 
 ## Contact
 
-Privacy questions: **privacy@yourdomain.com**.
+Privacy questions: **privacy@guruhealthline.com**.

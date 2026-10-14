@@ -1,6 +1,6 @@
 ---
 title: Editorial Policy
-description: The standards NutriVerdict follows when researching, writing, reviewing and updating supplement guides.
+description: The standards GuruHealthline follows when researching, writing, reviewing and updating supplement guides.
 updated: 2026-10-14
 ---
 
