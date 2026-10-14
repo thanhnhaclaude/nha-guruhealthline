@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Logo from "./Logo";
-import { SITE_NAME } from "@/lib/site";
+import { COMPANY, COMPANY_ADDRESS, SITE_NAME } from "@/lib/site";
 import { TOPICS } from "@/lib/topics";
 import { getAllPosts } from "@/lib/content";
 import { TOOLS } from "@/lib/tools";
@@ -41,6 +41,7 @@ export default function Footer() {
             </p>
             <ul className="ftlinks ftabout">
               <li><Link href="/about">About us</Link></li>
+              <li><Link href="/contact">Contact</Link></li>
               <li><Link href="/editorial-policy">Editorial policy</Link></li>
               <li><Link href="/supplement-safety-database">Safety database</Link></li>
             </ul>
@@ -77,10 +78,14 @@ export default function Footer() {
             <Link href="/affiliate-disclosure">Affiliate Disclosure</Link>
             <Link href="/medical-disclaimer">Medical Disclaimer</Link>
             <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/contact">Contact</Link>
             <Link href="/all-supplements">Sitemap</Link>
           </div>
+          <p className="ftcompany">
+            {SITE_NAME} is owned and operated by <strong>{COMPANY.legalName}</strong> · {COMPANY_ADDRESS} · {COMPANY.email}
+          </p>
           <p className="ftdisc">
-            © {new Date().getFullYear()} {SITE_NAME}. Content is for education only and isn&apos;t medical advice. Statements
+            © {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved. Content is for education only and isn&apos;t medical advice. Statements
             have not been evaluated by the FDA. Products discussed are not intended to diagnose, treat, cure or prevent any
             disease. As an Amazon Associate we earn from qualifying purchases.
           </p>

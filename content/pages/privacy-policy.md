@@ -6,6 +6,10 @@ updated: 2026-10-14
 
 <!-- TODO before launch: have this reviewed for the regions you target (e.g. GDPR, CCPA). -->
 
+## Who we are
+
+This website (guruhealthline.com) is operated by **SPARKX MARKETING CO., LIMITED**, 411 108th Avenue Northeast, Suite 700, Bellevue, WA 98004, United States ("we", "us"). We are responsible for the personal data described in this policy.
+
 ## What we collect
 
 GuruHealthline doesn't require an account and doesn't sell personal data. Our hosting provider keeps standard server logs (IP address, browser type, pages visited) for security and troubleshooting.

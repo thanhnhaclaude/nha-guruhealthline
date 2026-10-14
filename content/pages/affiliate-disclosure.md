@@ -4,7 +4,7 @@ description: How GuruHealthline earns money through affiliate links, and how we 
 updated: 2026-10-14
 ---
 
-GuruHealthline is reader-supported. Some links on this site are affiliate links. When you buy through one, the store pays us a small commission. The price you pay doesn't change.
+GuruHealthline is owned and operated by SPARKX MARKETING CO., LIMITED and is reader-supported. Some links on this site are affiliate links. When you buy through one, the store pays us a small commission. The price you pay doesn't change.
 
 **As an Amazon Associate we earn from qualifying purchases.** We may also participate in the iHerb affiliate program.
 

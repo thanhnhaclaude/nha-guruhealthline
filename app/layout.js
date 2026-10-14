@@ -2,7 +2,7 @@ import { DM_Sans, Playfair_Display } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
-import { IS_PRODUCTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
+import { COMPANY, IS_PRODUCTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const heading = Playfair_Display({ subsets: ["latin"], weight: ["700", "900"], style: ["normal", "italic"], variable: "--font-heading", display: "swap" });
@@ -31,8 +31,20 @@ export default function RootLayout({ children }) {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: SITE_NAME,
+            legalName: COMPANY.legalName,
             url: SITE_URL,
             logo: `${SITE_URL}/icon.svg`,
+            email: COMPANY.email,
+            foundingDate: COMPANY.founded,
+            identifier: { "@type": "PropertyValue", propertyID: "Washington UBI", value: COMPANY.ubi.replace(/\s/g, "") },
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: COMPANY.street,
+              addressLocality: COMPANY.city,
+              addressRegion: COMPANY.region,
+              postalCode: COMPANY.postalCode,
+              addressCountry: COMPANY.countryCode,
+            },
           }}
         />
         <a className="skip-link" href="#main">

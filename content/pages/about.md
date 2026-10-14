@@ -23,6 +23,20 @@ qualifications (e.g. RD, PharmD, MD) and a link to a profile for each person. --
 
 GuruHealthline is written by an independent editorial team. Author profiles with qualifications are listed on each article.
 
+## Company information
+
+GuruHealthline is owned and operated by **SPARKX MARKETING CO., LIMITED**.
+
+| | |
+|---|---|
+| Legal name | SPARKX MARKETING CO., LIMITED |
+| Business type | Foreign Profit Corporation |
+| Washington UBI number | 605 014 114 |
+| Registered | December 30, 2022 |
+| Principal office | 411 108th Avenue Northeast, Suite 700, Bellevue, WA 98004, United States |
+
+See our [contact page](/contact) to get in touch.
+
 ## How we make money
 
 Some links on this site go to stores such as Amazon. If you buy through them we may earn a small commission, at no extra cost to you. Retailers never pay for placement and never see an article before it's published. Details are in our [affiliate disclosure](/affiliate-disclosure).
