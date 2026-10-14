@@ -3,7 +3,7 @@ import DirectoryFilter from "@/components/DirectoryFilter";
 import JsonLd from "@/components/JsonLd";
 import { faqSchema } from "@/components/ArticleParts";
 import { buildStoreUrl, storeLabel } from "@/lib/affiliate";
-import { getAllIngredients, getAllPosts, getAllReviews, getTopicItems } from "@/lib/content";
+import { getAllArticles, getAllIngredients, getAllPosts, getAllReviews, getTopicGuide, getTopicItems } from "@/lib/content";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { INTERACTIONS } from "@/lib/tooldata";
 import { GRID_LIBRARIES, TOPICS } from "@/lib/topics";
@@ -18,24 +18,44 @@ export const metadata = {
 
 const HOME_FAQ = [
   {
-    q: `How does ${SITE_NAME} choose what to recommend?`,
-    a: "We start from official sources and peer-reviewed research, compare product doses with the doses used in studies, and check for third-party testing. Retailers can't pay for placement.",
+    q: `What does ${SITE_NAME} cover?`,
+    a: "Evidence-graded guides to 50 supplement ingredients, 21 X vs Y comparisons, 15 dosing and safety guides, health-goal guides for more than 45 conditions and 17 free tools such as an interaction checker and dose calculator.",
+  },
+  {
+    q: "What are the best supplements for weight loss?",
+    a: "No supplement causes large weight loss. Soluble fiber such as psyllium helps with fullness and has small effects; most fat burners, including garcinia and green tea extract, show little benefit. Diet, activity, sleep and, for some people, prescription medicines matter far more.",
+  },
+  {
+    q: "What is the best brain supplement for memory and focus?",
+    a: "There's no proven memory booster for healthy people. Fixing low vitamin B12 helps when you're deficient, and caffeine with L-theanine improves short-term focus. Ginkgo failed to prevent memory decline in a large trial.",
+  },
+  {
+    q: "Is magnesium glycinate better than magnesium citrate?",
+    a: "Both are well absorbed. Glycinate is gentler on the stomach and popular in the evening; citrate is cheaper and has a mild laxative effect. Choose by how your gut reacts.",
+  },
+  {
+    q: "What is the best blood sugar supplement?",
+    a: "Berberine and psyllium fiber have the best evidence for lowering blood sugar. They have smaller effects than lifestyle changes and diabetes medicines, and berberine interacts with many drugs.",
+  },
+  {
+    q: "Is creatine monohydrate better than creatine HCl?",
+    a: "Yes, for most people. Monohydrate is the form used in nearly all research and costs less; HCl dissolves better but hasn't been shown to work better.",
+  },
+  {
+    q: "What is the best supplement for joint pain?",
+    a: "It depends on the cause. Omega-3s modestly help rheumatoid arthritis. For osteoarthritis, glucosamine, curcumin and collagen show mixed results; exercise and weight loss help most.",
   },
   {
     q: "Are supplements safe to take with medication?",
-    a: "Some aren't. Vitamin K affects warfarin, magnesium and zinc bind some antibiotics, and St. John's wort interacts with many drugs. Use our interaction checker as a starting point and confirm with your pharmacist.",
+    a: "Some aren't. Vitamin K affects warfarin, minerals bind some antibiotics, and St. John's wort interacts with many drugs. Use our interaction checker and drug interaction lookup, then confirm with your pharmacist.",
   },
   {
-    q: "Do I need supplements if I eat a healthy diet?",
-    a: "Often not. Common exceptions are vitamin D with little sun exposure, B12 for vegans and adults over 50, folic acid before pregnancy, and iron when a blood test shows you're low.",
-  },
-  {
-    q: "What do the A–D evidence grades mean?",
-    a: "A means strong, consistent human evidence; B moderate; C limited or mixed; D good evidence of no benefit. Every ingredient guide grades each claimed use.",
+    q: "Are dietary supplements FDA approved?",
+    a: "No. In the US, the FDA doesn't approve dietary supplements for safety or effectiveness before they're sold. Third-party testing seals such as USP, NSF or Informed Choice help confirm quality.",
   },
   {
     q: "How do you make money?",
-    a: "Through affiliate links: when you buy through a link we may earn a commission at no cost to you. This never changes our verdicts.",
+    a: "Through affiliate links: when you buy through a link we may earn a commission at no cost to you. Brands can't pay for rankings, and the safety database has no affiliate links.",
   },
 ];
 
@@ -64,6 +84,21 @@ export default function Home() {
     ...GRID_LIBRARIES.map((l) => ({ ...l, sub: libCounts[l.href] })),
     ...gridTopics.slice(13).map(topicCard),
   ];
+  const realReviews = reviews.filter((r) => !r.example);
+  // Editor's picks: the best-evidence option for each major goal, from our topic guides.
+  const PICK_TOPICS = ["sleep", "anxiety-supplements", "muscle-building-supplements", "heart-health-supplements", "gut-health", "immune-system", "bone-health-supplements", "blood-sugar"];
+  // One distinct ingredient per goal (e.g. psyllium tops both heart and gut; use the next-best for the second).
+  const usedPicks = new Set();
+  const topPicks = PICK_TOPICS.map((slug) => {
+    const guide = getTopicGuide(slug);
+    const topic = TOPICS.find((x) => x.slug === slug);
+    const pick = guide?.picks?.slice().sort((a, b) => a.grade.localeCompare(b.grade)).find((p) => p.grade !== "D" && !usedPicks.has(p.name.split(" (")[0]));
+    if (pick) usedPicks.add(pick.name.split(" (")[0]);
+    return pick && { slug, topic, pick };
+  }).filter(Boolean);
+  const articles = getAllArticles();
+  const topicGuides = TOPICS.map((tp) => ({ tp, guide: getTopicGuide(tp.slug) })).filter((x) => x.guide);
+  const EDITORIAL_GOALS = ["weight-loss", "brain-health", "blood-sugar", "joints", "hearing"];
   const bestGrade = (i) => (i.evidence?.map((e) => e.grade).sort()[0]) || "C";
 
   return (
@@ -183,56 +218,66 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Top picks (only once real reviews exist) */}
-      {reviews.length > 0 && (
-        <div className="page">
-          <section className="sec" aria-labelledby="picks-title" style={{ paddingTop: 0 }}>
-            <div className="sh2">
-              <div className="slbl">Editor&apos;s Top Picks — {month}</div>
-              <h2 className="stit" id="picks-title">Top-Rated Supplements</h2>
-              <p className="ssub">Ranked on ingredient quality, dose versus research, transparency, safety and value.</p>
-            </div>
-            <div className="reviewed-by" role="note">
-              <span aria-hidden="true">📝</span>
-              <span>
-                Reviewed by the <strong>{SITE_NAME} Editorial Team</strong> · Methodology: ingredient analysis, clinical
-                evidence, third-party testing, value · Last updated: <strong>{fullDate}</strong>
-              </span>
-            </div>
-            <div className="pgrid">
-              {reviews.slice(0, 8).map((r, i) => (
-                <article className="pc" key={r.slug}>
-                  <div className="pct">
-                    <div className="pb">#{i + 1} {r.productType}</div>
-                    {r.example && <div className="pb pb-ex">Example</div>}
-                  </div>
-                  <div className="pcb">
-                    <h3 className="pname">{r.name}</h3>
-                    <div className="pcat">★ {Number(r.rating).toFixed(1)}/5</div>
-                    <p className="pdesc">{r.verdict}</p>
-                    {r.chips?.length > 0 && (
-                      <div className="ptrust">{r.chips.map((c) => <span className="tc" key={c}>{c}</span>)}</div>
-                    )}
-                    <Link href={`/reviews/${r.slug}`} className="prev">Read Full Review</Link>
-                    {r.cta && (
-                      <a className="pcta" href={buildStoreUrl(r.cta)} target="_blank" rel="sponsored nofollow noopener">
-                        {r.cta.label} on {storeLabel(r.cta)} →
-                      </a>
-                    )}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        </div>
-      )}
+      {/* Top picks */}
+      <div className="page">
+        <section className="sec" aria-labelledby="picks-title" style={{ paddingTop: 0 }}>
+          <div className="sh2">
+            <div className="slbl">Editor&apos;s Top Picks — {month}</div>
+            <h2 className="stit" id="picks-title">Best Supplements of {now.getFullYear()} by Goal</h2>
+            <p className="ssub">The best-supported option for each of the most searched health goals, chosen by strength of evidence, safety and value.</p>
+          </div>
+          <div className="reviewed-by" role="note">
+            <span aria-hidden="true">📝</span>
+            <span>
+              Reviewed by the <strong>{SITE_NAME} Editorial Team</strong> · Methodology: human clinical evidence (graded A–D),
+              dose versus research, safety and interactions · Last updated: <strong>{fullDate}</strong>
+            </span>
+          </div>
+          <div className="pgrid">
+            {realReviews.slice(0, 8).map((r, i) => (
+              <article className="pc" key={r.slug}>
+                <div className="pct"><div className="pb">#{i + 1} {r.productType}</div></div>
+                <div className="pcb">
+                  <h3 className="pname">{r.name}</h3>
+                  <div className="pcat">★ {Number(r.rating).toFixed(1)}/5</div>
+                  <p className="pdesc">{r.verdict}</p>
+                  <Link href={`/reviews/${r.slug}`} className="prev">Read Full Review</Link>
+                  {r.cta && (
+                    <a className="pcta" href={buildStoreUrl(r.cta)} target="_blank" rel="sponsored nofollow noopener">
+                      {r.cta.label} on {storeLabel(r.cta)} →
+                    </a>
+                  )}
+                </div>
+              </article>
+            ))}
+            {realReviews.length === 0 && topPicks.map(({ slug, topic, pick }) => (
+              <article className="pc" key={slug}>
+                <div className="pct">
+                  <div className="pb">#1 {topic.name}</div>
+                  <span className={`ing-grade-dot grade-${pick.grade.toLowerCase()}`} style={{ position: "static" }} aria-label={`Evidence grade ${pick.grade}`}>{pick.grade}</span>
+                </div>
+                <div className="pcb">
+                  <h3 className="pname">{pick.name}</h3>
+                  <div className="pcat">{topic.emoji} Best for {topic.name.toLowerCase()}</div>
+                  <p className="pdesc">{pick.note}</p>
+                  <div className="ptrust"><span className="tc">{pick.dose}</span></div>
+                  <Link href={`/${slug}`} className="prev">Read the {topic.name} Guide</Link>
+                  <a className="pcta" href={buildStoreUrl({ query: pick.name.replace(/\(.*?\)/g, "").trim() + " supplement", store: "amazon" })} target="_blank" rel="sponsored nofollow noopener">
+                    Compare options on Amazon →
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* Ingredient guides */}
       <div className="band band-alt" role="region" aria-labelledby="ing-title">
         <div className="page">
           <div className="sh2">
             <div className="slbl">Evidence-Based Ingredient Guides</div>
-            <h2 className="stit" id="ing-title">Ingredient Guides with Graded Evidence</h2>
+            <h2 className="stit" id="ing-title">{ingredients.length} Ingredient Guides with Graded Evidence</h2>
             <p className="ssub">What&apos;s actually in your supplements? Every guide grades each use from A to D.</p>
           </div>
           <div className="ing-grid-home">
@@ -256,7 +301,7 @@ export default function Home() {
         <div className="page">
           <div className="sh2">
             <div className="slbl">X vs Y — Supplement Comparisons</div>
-            <h2 className="stit" id="compare-title">Evidence-Based Supplement Comparisons</h2>
+            <h2 className="stit" id="compare-title">{compare.length} Evidence-Based Supplement Comparisons</h2>
             <p className="ssub">Supplement forms and alternatives, side by side.</p>
           </div>
           <div className="compare-grid">
@@ -322,15 +367,17 @@ export default function Home() {
         <section className="sec" aria-labelledby="dir-title">
           <div className="sh2">
             <div className="slbl">Complete Directory</div>
-            <h2 className="stit" id="dir-title">Everything We Cover, A to Z</h2>
+            <h2 className="stit" id="dir-title">All {ingredients.length + posts.length + articles.length + topicGuides.length + realReviews.length} Guides, A to Z</h2>
             <p className="ssub">Every review, ingredient and guide on the site. Updated {month}.</p>
           </div>
           <DirectoryFilter
             noun="pages"
             items={[
-              ...reviews.map((r) => ({ href: `/reviews/${r.slug}`, label: r.name, sub: `Review · ${r.productType}` })),
+              ...realReviews.map((r) => ({ href: `/reviews/${r.slug}`, label: r.name, sub: `Review · ${r.productType}` })),
               ...ingredients.map((i) => ({ href: `/ingredients/${i.slug}`, label: i.name, sub: `Ingredient · ${i.group}` })),
               ...posts.map((p) => ({ href: `/${p.slug}`, label: p.title.split(/[:?]/)[0], sub: p.category === "compare" ? "Comparison" : "Dosing & safety" })),
+              ...articles.map((a) => ({ href: `/articles/${a.slug}`, label: a.title.split(/[:?]/)[0], sub: "Article" })),
+              ...topicGuides.map(({ tp }) => ({ href: `/${tp.slug}`, label: `Supplements for ${tp.name}`, sub: "Health-goal guide" })),
             ].sort((a, b) => a.label.localeCompare(b.label))}
           />
         </section>
@@ -348,31 +395,81 @@ export default function Home() {
       <section className="editorial" aria-labelledby="editorial-title">
         <div className="page">
           <div className="ei">
-            <div className="slbl">Editorial Standards — {month}</div>
+            <div className="slbl">Editorial Review — {month}</div>
             <h2 id="editorial-title">Why {SITE_NAME} Is a Supplement Resource You Can Check</h2>
             <p>
-              Supplement marketing is full of big promises and small doses. We built {SITE_NAME} to do the opposite:
-              show the evidence behind every claim, say plainly when it&apos;s weak, and make the safety information as easy to
-              find as the buying advice.
+              Supplement marketing is full of big promises and small doses. We built {SITE_NAME} to do the opposite: show the
+              evidence behind every claim, say plainly when it&apos;s weak, and make safety information as easy to find as buying
+              advice. Here is what you&apos;ll find, and how we put it together.
             </p>
-            <h3>Ingredient library graded A to D</h3>
+
+            <h3>Supplement ingredient encyclopedia: {ingredients.length} evidence-graded guides</h3>
             <p>
-              Each <Link href="/ingredients">ingredient guide</Link> lists the uses people buy it for and grades the human
-              evidence for each one, alongside official daily targets, upper limits and interactions.
+              Every <Link href="/ingredients">ingredient guide</Link> lists the uses people buy it for and grades the human evidence
+              from A to D, alongside daily targets, upper limits and interactions. Popular guides include{" "}
+              {ingredients.slice(0, 8).map((i, n) => (
+                <span key={i.slug}>{n > 0 && ", "}<Link href={`/ingredients/${i.slug}`}>{i.name}</Link></span>
+              ))}.
             </p>
-            <h3>Comparisons that pick a winner for each situation</h3>
+
+            <h3>Supplement comparisons: {compare.length} X vs Y evidence guides</h3>
             <p>
-              Our <Link href="/compare">X vs Y comparisons</Link> line up form, dose, absorption, evidence and cost, then tell
-              you which option suits which goal instead of hedging.
+              Our <Link href="/compare">comparisons</Link> line up form, dose, absorption, evidence and cost, then pick a winner for
+              each situation. Start with{" "}
+              {compare.slice(0, 5).map((p, n) => (
+                <span key={p.slug}>{n > 0 && ", "}<Link href={`/${p.slug}`}>{p.vsA} vs {p.vsB}</Link></span>
+              ))}.
             </p>
-            <h3>Free tools, no sign-up</h3>
+
+            <h3>Free supplement tools</h3>
             <p>
-              The <Link href="/tools">tools</Link> check interactions, calculate doses and compare real cost per dose. They run
-              in your browser and store nothing.
+              {TOOLS.length} <Link href="/tools">free tools</Link> run in your browser and store nothing, including the{" "}
+              <Link href="/tools/supplement-interaction-checker/">interaction checker</Link>,{" "}
+              <Link href="/tools/supplement-dose-calculator/">dose calculator</Link>,{" "}
+              <Link href="/tools/label-decoder/">label decoder</Link> and{" "}
+              <Link href="/tools/vitamin-d-calculator/">vitamin D sunlight calculator</Link>.
             </p>
+
+            {EDITORIAL_GOALS.map((slug) => {
+              const g = getTopicGuide(slug);
+              const tp = TOPICS.find((x) => x.slug === slug);
+              if (!g) return null;
+              return (
+                <div key={slug}>
+                  <h3>{g.title.split(":")[0]} in {now.getFullYear()}</h3>
+                  <p>
+                    {g.answer} <Link href={`/${slug}`}>Read the full {tp.name.toLowerCase()} guide →</Link>
+                  </p>
+                </div>
+              );
+            })}
+
+            <h3>Condition-specific supplement guides: {topicGuides.length} health goals</h3>
+            <p>
+              {topicGuides.map(({ tp }, n) => (
+                <span key={tp.slug}>{n > 0 && " · "}<Link href={`/${tp.slug}`}>{tp.name}</Link></span>
+              ))}
+            </p>
+
+            <h3>Dosing and safety guides: clear answers to common questions</h3>
+            <p>
+              {dosing.map((p, n) => (
+                <span key={p.slug}>{n > 0 && " · "}<Link href={`/${p.slug}`}>{p.title.match(/^[^?:]+\??/)[0]}</Link></span>
+              ))}
+            </p>
+
+            <h3>Free supplement safety tools</h3>
+            <p>
+              The <Link href="/supplement-safety-database/">supplement safety database</Link> lists {INTERACTIONS.filter((i) => i.level !== "ok").length}{" "}
+              documented interactions with no affiliate links. Look up a prescription medicine in the{" "}
+              <Link href="/tools/supplement-drug-interactions/">drug interaction lookup</Link>, or check marketing claims with the{" "}
+              <Link href="/tools/snake-oil/">snake oil detector</Link>.
+            </p>
+
             <h3>Our editorial standards and independence</h3>
             <p>
-              Brands can&apos;t pay for rankings or reviews. Affiliate links fund the site and are always marked. Read our{" "}
+              Every page cites its sources, most from the NIH Office of Dietary Supplements, NCCIH, MedlinePlus and peer-reviewed
+              trials. Brands can&apos;t pay for rankings or reviews. Affiliate links fund the site and are always marked. Read our{" "}
               <Link href="/editorial-policy">editorial policy</Link> and <Link href="/affiliate-disclosure">affiliate disclosure</Link>.
             </p>
           </div>
