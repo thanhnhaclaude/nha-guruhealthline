@@ -86,7 +86,17 @@ export default function Home() {
   ];
   const realReviews = reviews.filter((r) => !r.example);
   // Editor's picks: the best-evidence option for each major goal, from our topic guides.
-  const PICK_TOPICS = ["sleep", "anxiety-supplements", "muscle-building-supplements", "heart-health-supplements", "gut-health", "immune-system", "bone-health-supplements", "blood-sugar"];
+  const PICK_TOPICS = ["weight-loss", "brain-health", "blood-sugar", "dental-health", "joints", "vision", "gut-health", "hearing"];
+  const PICK_STYLE = {
+    "weight-loss": { short: "Weight Loss", label: "Weight Loss", badge: "pb-gold", btn: "#1a7a4a" },
+    "brain-health": { short: "Brain", label: "Brain Health", badge: "pb-purple", btn: "#5b4fcf" },
+    "blood-sugar": { short: "Blood Sugar", label: "Blood Sugar", badge: "pb-gold", btn: "#1a7a4a" },
+    "dental-health": { short: "Dental", label: "Dental Health", badge: "pb-blue", btn: "#0e8fb0" },
+    joints: { short: "Joint Health", label: "Joints & Pain", badge: "pb-yellow", btn: "#b4540a" },
+    vision: { short: "Vision", label: "Vision & Eyes", badge: "pb-green", btn: "#1a7a4a" },
+    "gut-health": { short: "Gut Health", label: "Gut Health", badge: "pb-green", btn: "#1a7a4a" },
+    hearing: { short: "Tinnitus", label: "Hearing & Tinnitus", badge: "pb-green", btn: "#1a7a4a" },
+  };
   // One distinct ingredient per goal (e.g. psyllium tops both heart and gut; use the next-best for the second).
   const usedPicks = new Set();
   const topPicks = PICK_TOPICS.map((slug) => {
@@ -223,8 +233,8 @@ export default function Home() {
         <section className="sec" aria-labelledby="picks-title" style={{ paddingTop: 0 }}>
           <div className="sh2">
             <div className="slbl">Editor&apos;s Top Picks — {month}</div>
-            <h2 className="stit" id="picks-title">Best Supplements of {now.getFullYear()} by Goal</h2>
-            <p className="ssub">The best-supported option for each of the most searched health goals, chosen by strength of evidence, safety and value.</p>
+            <h2 className="stit" id="picks-title">Best Supplements of {now.getFullYear()}</h2>
+            <p className="ssub">The best-supported option in the most searched health categories, selected for strength of clinical evidence, safety and value.</p>
           </div>
           <div className="reviewed-by" role="note">
             <span aria-hidden="true">📝</span>
@@ -250,24 +260,28 @@ export default function Home() {
                 </div>
               </article>
             ))}
-            {realReviews.length === 0 && topPicks.map(({ slug, topic, pick }) => (
-              <article className="pc" key={slug}>
-                <div className="pct">
-                  <div className="pb">#1 {topic.name}</div>
-                  <span className={`ing-grade-dot grade-${pick.grade.toLowerCase()}`} style={{ position: "static" }} aria-label={`Evidence grade ${pick.grade}`}>{pick.grade}</span>
-                </div>
-                <div className="pcb">
-                  <h3 className="pname">{pick.name}</h3>
-                  <div className="pcat">{topic.emoji} Best for {topic.name.toLowerCase()}</div>
-                  <p className="pdesc">{pick.note}</p>
-                  <div className="ptrust"><span className="tc">{pick.dose}</span></div>
-                  <Link href={`/${slug}`} className="prev">Read the {topic.name} Guide</Link>
-                  <a className="pcta" href={buildStoreUrl({ query: pick.name.replace(/\(.*?\)/g, "").trim() + " supplement", store: "amazon" })} target="_blank" rel="sponsored nofollow noopener">
-                    Compare options on Amazon →
+            {realReviews.length === 0 && topPicks.map(({ slug, topic, pick }) => {
+              const st = PICK_STYLE[slug];
+              return (
+                <article className="pc" key={slug}>
+                  <div className="pct"><div className={`pb ${st.badge}`}>#1 {st.short}</div></div>
+                  <div className="pcb">
+                    <h3 className="pname">{pick.name}</h3>
+                    <div className="pcat">{st.label}</div>
+                    <p className="pdesc">{pick.note}</p>
+                    <div className="ptrust">
+                      <span className="tc">Evidence grade {pick.grade}</span>
+                      <span className="tc">{pick.dose.split(/[,;(]/)[0].trim()}</span>
+                    </div>
+                  </div>
+                  <Link href={`/${slug}`} className="prev">Read Full Guide</Link>
+                  <a className="pcta" style={{ background: st.btn }} href={buildStoreUrl({ query: pick.name.replace(/\(.*?\)/g, "").trim() + " supplement", store: "amazon" })} target="_blank" rel="sponsored nofollow noopener">
+                    Check Best Price →
                   </a>
-                </div>
-              </article>
-            ))}
+                  <p className="paff">Affiliate link · Sponsored</p>
+                </article>
+              );
+            })}
           </div>
         </section>
       </div>

@@ -578,3 +578,17 @@ main { min-height: 50vh; }
 .sev-tag { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
 .sev-tag.avoid { background: #fdecec; color: var(--danger); }
 .sev-tag.caution { background: var(--gold-soft); color: var(--gold-text); }
+
+/* Top picks: match original card layout (badge colors, full-width buttons, affiliate note) */
+.pc .pcb { flex: 1; padding-bottom: 12px; }
+.pc .prev { margin: 0 1.1rem .5rem; }
+.pc .pcta { margin: 0 1.1rem .4rem; color: #fff; }
+.pc .pcta:hover { color: #fff; }
+.paff { font-size: 10.5px; color: var(--muted); text-align: center; margin: 0 0 .9rem; }
+.pb-gold { background: #fdf3e0; color: #8a5e10; }
+.pb-purple { background: #ede9fe; color: #5b21b6; }
+.pb-blue { background: #e0f2fe; color: #0369a1; }
+.pb-yellow { background: #fef3c7; color: #92400e; }
+.pb-green { background: #e8f5ee; color: #1a7a4a; }
+.pc .pcat { text-transform: uppercase; letter-spacing: .05em; }
+@media (min-width: 1100px) { .pgrid { grid-template-columns: repeat(4, 1fr); } }
