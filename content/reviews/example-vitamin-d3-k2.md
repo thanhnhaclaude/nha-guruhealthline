@@ -4,7 +4,7 @@ name: Example D3 + K2 Softgels
 brand: Example Brand
 productType: Vitamin D supplement
 description: "Layout sample for a combination product review: replace with a real vitamin D3 + K2 product and your own evaluation."
-topics: [bone-health, immune-system]
+topics: [bone-health-supplements, immune-system]
 rating: 4.0
 scores:
   Ingredients: 8.2

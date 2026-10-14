@@ -56,7 +56,7 @@ function recommend(a) {
   };
   goal[a.goal]?.();
   if (a.life === "preg") recs.push({ name: "Talk to your midwife or doctor", why: "Many herbs, including ashwagandha, aren't safe during pregnancy. Choose a prenatal with your clinician.", warn: true });
-  if (a.life === "meds") recs.push({ name: "Check interactions before buying", why: "Several supplements change how medications work.", href: "/tools/interaction-checker", warn: true });
+  if (a.life === "meds") recs.push({ name: "Check interactions before buying", why: "Several supplements change how medications work.", href: "/tools/supplement-interaction-checker", warn: true });
   return recs;
 }
 

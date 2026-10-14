@@ -4,7 +4,7 @@ group: Vitamins
 title: "Vitamin D3 Supplements: Benefits, Dosage, Deficiency and Safety"
 seoTitle: "Vitamin D3 Supplements: Benefits, Dosage & Safety"
 description: "Vitamin D3 helps you absorb calcium and supports bones and immunity. Learn who needs a supplement, safe daily doses, and when to test your levels."
-topics: [bone-health, immune-system, longevity, menopause]
+topics: [bone-health-supplements, immune-system, longevity-supplements, menopause-supplements]
 facts:
   Type: Fat-soluble vitamin (cholecalciferol)
   Adult RDA: "600 IU (15 mcg); 800 IU over 70"

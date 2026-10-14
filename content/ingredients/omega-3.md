@@ -4,7 +4,7 @@ group: Essential fats
 title: "Omega-3 Supplements: Benefits, Dosage and How to Choose"
 seoTitle: "Omega-3 Supplements: Benefits, EPA/DHA Dose & Safety"
 description: "EPA and DHA omega-3s support heart, brain and eye health. See what the evidence shows, how much EPA + DHA to take, and how to pick a pure supplement."
-topics: [heart-health, brain-health, joints, vision]
+topics: [heart-health-supplements, brain-health, joints, vision]
 facts:
   Type: Essential polyunsaturated fats
   Common target: "250–500 mg EPA + DHA/day"

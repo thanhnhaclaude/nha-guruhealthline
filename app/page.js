@@ -6,7 +6,7 @@ import { buildStoreUrl, storeLabel } from "@/lib/affiliate";
 import { getAllIngredients, getAllPosts, getAllReviews, getTopicItems } from "@/lib/content";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { INTERACTIONS } from "@/lib/tooldata";
-import { TOPICS } from "@/lib/topics";
+import { GRID_LIBRARIES, TOPICS } from "@/lib/topics";
 import { TOOLS } from "@/lib/tools";
 
 export const metadata = {
@@ -51,6 +51,19 @@ export default function Home() {
   const now = new Date();
   const month = now.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   const fullDate = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  // Same grid order as the original: 13 goals, the 4 library links, then the remaining goals.
+  const gridTopics = TOPICS.filter((t) => t.grid);
+  const topicCard = (t) => {
+    const it = getTopicItems(t.slug);
+    const n = it.guides.length + it.ingredients.length + it.reviews.length;
+    return { href: `/${t.slug}`, emoji: t.emoji, name: t.name, sub: n ? `${n} guide${n === 1 ? "" : "s"}` : "Coming soon" };
+  };
+  const libCounts = { "/ingredients": `${ingredients.length} guides`, "/compare": `${compare.length} comparisons`, "/tools": `${TOOLS.length} tools`, "/all-supplements": "A to Z" };
+  const gridItems = [
+    ...gridTopics.slice(0, 13).map(topicCard),
+    ...GRID_LIBRARIES.map((l) => ({ ...l, sub: libCounts[l.href] })),
+    ...gridTopics.slice(13).map(topicCard),
+  ];
   const bestGrade = (i) => (i.evidence?.map((e) => e.grade).sort()[0]) || "C";
 
   return (
@@ -116,22 +129,18 @@ export default function Home() {
           <div className="sh2">
             <div className="slbl">Browse by Category</div>
             <h2 className="stit" id="cat-title">Find Supplements for Your Specific Goal</h2>
-            <p className="ssub">{TOPICS.length} health goals, each with the ingredients, comparisons and reviews that matter for it.</p>
+            <p className="ssub">{gridTopics.length} health goals, each with the ingredients, comparisons and reviews that matter for it.</p>
           </div>
           <nav className="cgrid" aria-label="Health goals">
-            {TOPICS.map((t) => {
-              const it = getTopicItems(t.slug);
-              const n = it.guides.length + it.ingredients.length + it.reviews.length;
-              return (
-                <Link key={t.slug} href={`/${t.slug}`} className="cc">
-                  <span className="ci" aria-hidden="true">{t.emoji}</span>
-                  <span>
-                    <span className="cn">{t.name}</span>
-                    <span className="ck">{n ? `${n} guide${n === 1 ? "" : "s"}` : "Coming soon"}</span>
-                  </span>
-                </Link>
-              );
-            })}
+            {gridItems.map((g) => (
+              <Link key={g.href} href={g.href} className="cc">
+                <span className="ci" aria-hidden="true">{g.emoji}</span>
+                <span>
+                  <span className="cn">{g.name}</span>
+                  <span className="ck">{g.sub}</span>
+                </span>
+              </Link>
+            ))}
           </nav>
         </section>
       </div>
@@ -168,7 +177,7 @@ export default function Home() {
                 <span>{w.text}</span>
               </div>
             ))}
-            <Link href="/tools/interaction-checker" className="safety-link">Check your own stack in the Interaction Checker →</Link>
+            <Link href="/tools/supplement-interaction-checker" className="safety-link">Check your own stack in the Interaction Checker →</Link>
           </div>
         </div>
       </div>
@@ -223,7 +232,7 @@ export default function Home() {
           <div className="sh2">
             <div className="slbl">Evidence-Based Ingredient Guides</div>
             <h2 className="stit" id="ing-title">Ingredient Guides with Graded Evidence</h2>
-            <p className="ssub">What&apos;s actually in your supplements? Every guide grades each use from A to D. <Link href="/ingredients">See all ingredients →</Link></p>
+            <p className="ssub">What&apos;s actually in your supplements? Every guide grades each use from A to D.</p>
           </div>
           <div className="ing-grid-home">
             {ingredients.map((i) => {
@@ -237,6 +246,7 @@ export default function Home() {
               );
             })}
           </div>
+          <Link href="/ingredients" className="view-all va-green">Browse all {ingredients.length} ingredient guides →</Link>
         </div>
       </div>
 
@@ -246,7 +256,7 @@ export default function Home() {
           <div className="sh2">
             <div className="slbl">X vs Y — Supplement Comparisons</div>
             <h2 className="stit" id="compare-title">Evidence-Based Supplement Comparisons</h2>
-            <p className="ssub">Supplement forms and alternatives, side by side. <Link href="/compare">See all comparisons →</Link></p>
+            <p className="ssub">Supplement forms and alternatives, side by side.</p>
           </div>
           <div className="compare-grid">
             {compare.map((p) => (
@@ -261,6 +271,7 @@ export default function Home() {
               </Link>
             ))}
           </div>
+          <Link href="/compare" className="view-all va-blue">See all {compare.length} comparisons →</Link>
         </div>
       </div>
 
@@ -282,6 +293,7 @@ export default function Home() {
               </Link>
             ))}
           </div>
+          <Link href="/tools" className="view-all va-white">Explore all free tools →</Link>
         </div>
       </div>
 
@@ -297,7 +309,7 @@ export default function Home() {
             {dosing.map((p) => (
               <Link key={p.slug} href={`/${p.slug}`} className="dose-link">
                 <span aria-hidden="true">{p.emoji || "💊"}</span>
-                <span>{p.title.split(/[:]/)[0]}</span>
+                <span>{p.title.match(/^[^?:]+\??/)[0]}</span>
               </Link>
             ))}
           </div>

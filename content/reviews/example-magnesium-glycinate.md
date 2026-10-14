@@ -4,7 +4,7 @@ name: Example Magnesium Glycinate 200
 brand: Example Brand
 productType: Magnesium supplement
 description: "Layout sample for a product review: replace with a real magnesium glycinate product, its label data and your own evaluation."
-topics: [sleep, stress-mood]
+topics: [sleep, anxiety-supplements]
 rating: 4.3
 scores:
   Ingredients: 8.8

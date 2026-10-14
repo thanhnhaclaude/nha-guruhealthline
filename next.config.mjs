@@ -6,7 +6,8 @@ const NOINDEX = { key: "X-Robots-Tag", value: "noindex, nofollow" };
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
-  trailingSlash: false,
+  // Same URL style as the original site: /how-much-magnesium-per-day/
+  trailingSlash: true,
   images: { formats: ["image/avif", "image/webp"] },
   // Moved or merged URLs: permanent (301/308) redirects consolidate ranking signals.
   async redirects() {

@@ -4,7 +4,7 @@ seoTitle: "Can You Take Vitamin D and K2 Together?"
 description: "Yes, vitamin D3 and K2 are safe together for most adults. See typical doses, what the research really shows, and the one medication that changes everything."
 category: dosing
 emoji: "🔗"
-topics: [bone-health, heart-health]
+topics: [bone-health-supplements, heart-health-supplements]
 date: 2026-10-14
 updated: 2026-10-14
 author: editorial

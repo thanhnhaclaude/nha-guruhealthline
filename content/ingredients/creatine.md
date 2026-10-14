@@ -4,7 +4,7 @@ group: Performance
 title: "Creatine Supplements: Benefits, Safety and How to Use It"
 seoTitle: "Creatine Supplements: Benefits, Safety & How to Use"
 description: "Creatine monohydrate is one of the best-studied supplements for strength and muscle. See the evidence, the emerging research on brain health, and safety."
-topics: [fitness, energy, longevity, brain-health]
+topics: [muscle-building-supplements, energy-supplements, longevity-supplements, brain-health]
 facts:
   Type: Amino acid derivative
   Typical dose: "3–5 g/day monohydrate"

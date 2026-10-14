@@ -4,7 +4,7 @@ group: Minerals
 title: "Magnesium Supplements: Benefits, Forms, Dosage and Safety"
 seoTitle: "Magnesium Supplements: Benefits, Forms & Dosage"
 description: "Magnesium supports muscles, nerves, blood sugar and sleep. See which benefits have real evidence, how the forms differ, and how much is safe to take."
-topics: [sleep, heart-health, blood-sugar, stress-mood, bone-health]
+topics: [sleep, heart-health-supplements, blood-sugar, anxiety-supplements, bone-health-supplements]
 facts:
   Type: Essential macromineral
   Adult RDA: "310–320 mg (women), 400–420 mg (men)"

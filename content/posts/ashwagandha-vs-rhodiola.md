@@ -6,7 +6,7 @@ category: compare
 vsA: Ashwagandha
 vsB: Rhodiola
 vsVerdict: "Ashwagandha for stress and sleep, rhodiola for daytime fatigue"
-topics: [stress-mood, sleep, energy]
+topics: [anxiety-supplements, sleep, energy-supplements]
 date: 2026-10-14
 updated: 2026-10-14
 author: editorial

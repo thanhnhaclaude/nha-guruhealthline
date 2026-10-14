@@ -4,7 +4,7 @@ seoTitle: "How Much Creatine Per Day? Dose, Loading & Timing"
 description: "3–5 grams of creatine monohydrate a day is enough for most adults. Learn when loading helps, how to dose by body weight, and what about kidneys."
 category: dosing
 emoji: "💪"
-topics: [fitness, energy]
+topics: [muscle-building-supplements, energy-supplements]
 date: 2026-10-14
 updated: 2026-10-14
 author: editorial

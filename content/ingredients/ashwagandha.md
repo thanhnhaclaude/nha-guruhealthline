@@ -4,7 +4,7 @@ group: Herbs & adaptogens
 title: "Ashwagandha Supplements: Benefits, Side Effects and Dosage"
 seoTitle: "Ashwagandha Supplements: Benefits, Side Effects & Dose"
 description: "Ashwagandha is an adaptogenic herb studied for stress, sleep and anxiety. See what trials show, typical doses, rare liver risks, and who should avoid it."
-topics: [stress-mood, sleep, mens-health]
+topics: [anxiety-supplements, sleep, mens-health]
 facts:
   Type: Herb (Withania somnifera root)
   Typical dose: "300–600 mg root extract/day"

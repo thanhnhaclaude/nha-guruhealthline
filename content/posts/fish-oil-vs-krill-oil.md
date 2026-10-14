@@ -6,7 +6,7 @@ category: compare
 vsA: Fish Oil
 vsB: Krill Oil
 vsVerdict: "Fish oil wins on dose, evidence and cost"
-topics: [heart-health, brain-health, joints]
+topics: [heart-health-supplements, brain-health, joints]
 date: 2026-10-14
 updated: 2026-10-14
 author: editorial
