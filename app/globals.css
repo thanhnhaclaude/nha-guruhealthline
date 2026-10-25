@@ -722,3 +722,15 @@ main { min-height: 50vh; }
 .shop-links a { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; background: #fff; border-radius: var(--radius-sm); text-decoration: none; color: var(--fg); border: 1px solid transparent; }
 .shop-links a:hover { border-color: var(--primary); }
 .shop-links span { font-size: .85rem; color: var(--primary); }
+.sfacts { border: 2px solid var(--fg); padding: 10px 14px; max-width: 520px; background: #fff; font-size: .95rem; }
+.sfacts-title { font-size: 1.8rem; font-weight: 800; margin: 0; line-height: 1.1; font-family: Arial, Helvetica, sans-serif; }
+.sfacts-serving { margin: 6px 0 0; padding-bottom: 8px; border-bottom: 8px solid var(--fg); }
+.sfacts table { width: 100%; border-collapse: collapse; }
+.sfacts th { text-align: right; font-size: .85rem; padding: 4px 0; border-bottom: 4px solid var(--fg); }
+.sfacts td { padding: 6px 0; border-bottom: 1px solid var(--fg); vertical-align: top; }
+.sfacts td:nth-child(2), .sfacts td:nth-child(3) { text-align: right; white-space: nowrap; padding-left: 12px; }
+.sfacts tbody tr:last-child td { border-bottom: 8px solid var(--fg); }
+.sfacts-note { font-size: .85rem; margin: 6px 0; }
+.sfacts-other { font-size: .9rem; margin: 6px 0 0; }
+.diet-chips { list-style: none; padding: 0; margin: 14px 0 0; }
+@media (max-width: 520px) { .sfacts td:nth-child(2), .sfacts td:nth-child(3) { white-space: normal; } }

@@ -1,31 +1,37 @@
 ---
-name: "GuruHealthline Ashwagandha Root"
-shortName: "Ashwagandha Root"
+name: "GuruHealthline Organic Ashwagandha"
+shortName: "Organic Ashwagandha"
 form: "Capsules"
-price: 26.95
+size: "60 capsules"
+servings: "60 servings"
+price: 22.95
 color: "#5b4fcf"
 ingredient: "ashwagandha"
-topics: ["anxiety-supplements", "energy-supplements"]
+topics: ["anxiety-supplements", "energy-supplements", "sleep"]
 goal: "Stress and daily balance"
-# Sample listing: replace size, servings, price and the Supplement Facts with the
-# real Supliful product, set shopifyVariantId, then delete `sample: true`.
-sample: true
-size: ""
-servings: ""
+dietary: ["Gluten-free", "Vegetarian"]
+# Fulfilled by Supliful (catalog slug below). Set shopifyVariantId after "Publish to Shopify".
+supliful: "ashwagandha-capsules"
 shopifyVariantId: ""
-description: "GuruHealthline Ashwagandha Root: an extract of withania somnifera root, an herb from ayurvedic tradition. Ships free in the US on orders over $50."
+updated: 2026-10-25
+description: "GuruHealthline Organic Ashwagandha: 60 capsules, 1 capsule per serving. Made in the USA in a GMP facility. Free US shipping on orders over $50."
+facts:
+  servingSize: "1 capsule"
+  servingsPerContainer: 60
+  rows:
+    - ["Organic Ashwagandha (Withania somnifera) (root)", "650 mg", "†"]
+    - ["Organic Black Pepper (Piper nigrum) (fruit)", "5 mg", "†"]
+  other: "Pullulan capsules."
 ---
 
 ## What it is
 
-An extract of Withania somnifera root, an herb from Ayurvedic tradition. Ashwagandha is studied mainly for stress and sleep quality; read our ingredient guide for the evidence and who should avoid it.
+650 mg of organic ashwagandha root per capsule, with a small amount of organic black pepper. Ashwagandha is an adaptogenic herb from Ayurvedic tradition. It is studied mainly for everyday stress and sleep quality; our ingredient guide covers what the trials found.
 
 ## How to use it
 
-Follow the directions on the label and do not exceed the stated serving. Our [ashwagandha root guide](/ingredients/ashwagandha/) explains typical doses, timing and the research behind them.
+Take 1 capsule a day with food, morning or evening. Do not exceed the stated serving. Our [ashwagandha guide](/ingredients/ashwagandha/) explains typical doses, timing and the research.
 
-## Talk to your doctor first if you
+## Before you take it
 
-- are pregnant, breastfeeding or planning a pregnancy
-- take prescription medicine or have a medical condition
-- are scheduled for surgery
+Not for use during pregnancy or breastfeeding. Talk to your doctor first if you have a thyroid or autoimmune condition, liver problems, or take sedatives, thyroid or diabetes medicine. Stop and see a doctor if you notice yellowing of the skin or eyes. Keep out of reach of children. Store in a cool, dry place.

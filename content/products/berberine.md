@@ -1,31 +1,37 @@
 ---
-name: "GuruHealthline Berberine"
+name: "GuruHealthline Berberine HCl"
 shortName: "Berberine"
 form: "Capsules"
-price: 32.95
+size: "60 capsules"
+servings: "30 servings"
+price: 29.95
 color: "#e6a100"
 ingredient: "berberine"
-topics: ["blood-sugar", "weight-loss"]
+topics: ["blood-sugar", "weight-loss", "berberine-dosage-timing"]
 goal: "Metabolic health"
-# Sample listing: replace size, servings, price and the Supplement Facts with the
-# real Supliful product, set shopifyVariantId, then delete `sample: true`.
-sample: true
-size: ""
-servings: ""
+dietary: ["Gluten-free", "Vegan friendly", "Non-GMO"]
+# Fulfilled by Supliful (catalog slug below). Set shopifyVariantId after "Publish to Shopify".
+supliful: "berberine-capsules"
 shopifyVariantId: ""
-description: "GuruHealthline Berberine: berberine hcl, a compound found in plants such as goldenseal and barberry. Ships free in the US on orders over $50."
+updated: 2026-10-25
+description: "GuruHealthline Berberine HCl: 60 capsules, 2 capsules per serving. Made in the USA in a GMP facility. Free US shipping on orders over $50."
+facts:
+  servingSize: "2 capsules"
+  servingsPerContainer: 30
+  rows:
+    - ["Granular Berberine Hydrochloride Extract 8% (bark/root)", "790 mg", "†"]
+    - ["Granular Berberine Hydrochloride Extract 97% (bark)", "10 mg", "†"]
+  other: "Cellulose (vegetable capsule), microcrystalline cellulose, L-leucine, olive oil."
 ---
 
 ## What it is
 
-Berberine HCl, a compound found in plants such as goldenseal and barberry. Berberine interacts with several medicines, so check our berberine guides and talk to your doctor before use.
+Berberine hydrochloride extract, 800 mg per 2-capsule serving. Note the label: most of the extract is standardized to 8% berberine, so the actual berberine content is lower than 800 mg. Our berberine dosage guide explains how to compare products.
 
 ## How to use it
 
-Follow the directions on the label and do not exceed the stated serving. Our [berberine guide](/ingredients/berberine/) explains typical doses, timing and the research behind them.
+Take 2 capsules a day with a meal, or as directed by your healthcare provider. Do not exceed the stated serving. Our [berberine guide](/ingredients/berberine/) explains typical doses, timing and the research.
 
-## Talk to your doctor first if you
+## Before you take it
 
-- are pregnant, breastfeeding or planning a pregnancy
-- take prescription medicine or have a medical condition
-- are scheduled for surgery
+Berberine interacts with many medicines, including metformin and other diabetes drugs, cyclosporine and blood thinners. Do not use during pregnancy or breastfeeding. Talk to your doctor before use. Keep out of reach of children. Store in a cool, dry place.

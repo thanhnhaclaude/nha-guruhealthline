@@ -116,7 +116,7 @@ git push -u origin main
 
 **Luồng đơn hàng:** khách thêm vào giỏ → trả bằng thẻ (Stripe Checkout) hoặc PayPal → server tính lại giá từ catalog, lưu đơn vào MySQL → khi thanh toán xác nhận (webhook Stripe / capture PayPal): gửi email xác nhận cho khách, email báo đơn cho chủ shop, và gửi đơn sang Supliful qua Shopify (nếu đã kết nối) → Supliful giao hàng → webhook Shopify cập nhật mã vận đơn và email cho khách.
 
-**Sản phẩm** nằm trong `content/products/*.md` (nội dung SEO). Giá, bật/tắt và Shopify variant ID chỉnh ở `/admin/products/`. Các file có `sample: true` là sản phẩm mẫu: không được index và **không bán được khi dùng khóa live**. Khi có sản phẩm thật: điền `size`, `servings`, giá, `shopifyVariantId`, rồi xóa dòng `sample: true`.
+**Sản phẩm** nằm trong `content/products/*.md`: 22 sản phẩm thật trong danh mục Supliful (trường `supliful` = slug trên supliful.com/catalog), bảng Supplement Facts chép từ nhãn Supliful ngày 25/10/2026, giá bán lẻ là giá đề xuất — kiểm tra lại với giá vốn Supliful. Giá, bật/tắt và Shopify variant ID chỉnh ở `/admin/products/`. Các file có `sample: true` là sản phẩm mẫu: không được index và **không bán được khi dùng khóa live**. Khi có sản phẩm thật: điền `size`, `servings`, giá, `shopifyVariantId`, rồi xóa dòng `sample: true`.
 
 ### Cài đặt trên Hostinger (biến môi trường, xem `.env.example`)
 

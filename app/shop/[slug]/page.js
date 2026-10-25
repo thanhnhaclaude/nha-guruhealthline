@@ -66,6 +66,33 @@ function productSchema(p) {
   };
 }
 
+function SupplementFacts({ facts }) {
+  const nd = facts.rows.some((r) => r[2] === "†");
+  return (
+    <div className="sfacts">
+      <p className="sfacts-title">Supplement Facts</p>
+      <p className="sfacts-serving">
+        Serving Size: {facts.servingSize}
+        <br />
+        Servings Per Container: {facts.servingsPerContainer}
+      </p>
+      <table>
+        <thead>
+          <tr><th scope="col"><span className="sr-only">Ingredient</span></th><th scope="col">Amount Per Serving</th><th scope="col">%DV</th></tr>
+        </thead>
+        <tbody>
+          {facts.rows.map(([name, amount, dv]) => (
+            <tr key={name}><td>{name}</td><td>{amount}</td><td>{dv}</td></tr>
+          ))}
+        </tbody>
+      </table>
+      {nd && <p className="sfacts-note">† Daily Value not established.</p>}
+      <p className="sfacts-other"><strong>Other ingredients:</strong> {facts.other}</p>
+      {facts.contains && <p className="sfacts-other"><strong>Contains:</strong> {facts.contains}</p>}
+    </div>
+  );
+}
+
 export default async function ProductPage({ params }) {
   const { slug } = await params;
   const p = await getProduct(slug);
@@ -114,12 +141,17 @@ export default async function ProductPage({ params }) {
 
       <div className="pdp-body">
         <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
-        <h2>Supplement Facts</h2>
-        <p className="muted">
-          {p.sample
-            ? "The full Supplement Facts panel will be shown here once the final label is confirmed."
-            : "See the product label for the full Supplement Facts panel, serving size and other ingredients."}
-        </p>
+        <h2 id="supplement-facts">Supplement Facts</h2>
+        {p.facts ? (
+          <SupplementFacts facts={p.facts} />
+        ) : (
+          <p className="muted">The full Supplement Facts panel will be shown here once the final label is confirmed.</p>
+        )}
+        {p.dietary.length > 0 && (
+          <ul className="chips diet-chips" aria-label="Dietary information">
+            {p.dietary.map((d) => <li key={d} className="chip">{d}</li>)}
+          </ul>
+        )}
         {topics.length > 0 && (
           <>
             <h2>Related health guides</h2>
