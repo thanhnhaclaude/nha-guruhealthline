@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
             name: SITE_NAME,
             legalName: COMPANY.legalName,
             url: SITE_URL,
-            logo: `${SITE_URL}/icon.svg`,
+            logo: `${SITE_URL}/icon-512.png`,
             email: COMPANY.email,
             foundingDate: COMPANY.founded,
             identifier: { "@type": "PropertyValue", propertyID: "Washington UBI", value: COMPANY.ubi.replace(/\s/g, "") },

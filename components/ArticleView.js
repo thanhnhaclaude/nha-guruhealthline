@@ -34,7 +34,7 @@ export default async function ArticleView({ post, basePath = "" }) {
       dateModified: post.updated || post.date,
       mainEntityOfPage: absoluteUrl(path),
       author: { "@type": "Organization", name: author.name, url: absoluteUrl(author.url) },
-      publisher: { "@type": "Organization", name: SITE_NAME, logo: { "@type": "ImageObject", url: absoluteUrl("/icon.svg") } },
+      publisher: { "@type": "Organization", name: SITE_NAME, logo: { "@type": "ImageObject", url: absoluteUrl("/icon-512.png") } },
       ...(post.sources?.length ? { citation: post.sources.map((s) => s.url) } : {}),
     },
     breadcrumbSchema(crumbs, absoluteUrl),
