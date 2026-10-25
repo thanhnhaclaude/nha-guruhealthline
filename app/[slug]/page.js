@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import ProductCard from "@/components/ProductCard";
+import ShopLinks from "@/components/shop/ShopLinks";
 import PostCard, { formatDate } from "@/components/PostCard";
 import ArticleView, { articleMetadata } from "@/components/ArticleView";
 import { AnswerBox, Breadcrumbs, EvidenceGrade, Faq, Sources, breadcrumbSchema, faqSchema } from "@/components/ArticleParts";
@@ -129,6 +130,7 @@ async function TopicHub({ topic }) {
             <div className="prod-grid">{reviews.map((r, i) => <ProductCard key={r.slug} review={r} rank={i + 1} />)}</div>
           </section>
         )}
+        <ShopLinks topic={topic.slug} title={`Shop for ${topic.name.toLowerCase()}`} />
         {ingredients.length > 0 && (
           <section className="sec">
             <h2 className="sec-title">Ingredient guides</h2>

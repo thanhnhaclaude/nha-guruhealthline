@@ -109,3 +109,29 @@ git push -u origin main
 - [ ] Kiểm tra `https://<domain>/robots.txt` và `/sitemap.xml`
 - [ ] Mở domain tạm `*.hostingersite.com` và xác nhận header `X-Robots-Tag: noindex` (DevTools → Network)
 - [ ] Gửi sitemap lên Google Search Console và Bing Webmaster Tools
+
+## Cửa hàng (dropship Supliful, thanh toán Stripe + PayPal)
+
+Đường dẫn: `/shop/` (danh mục), `/shop/<sản-phẩm>/`, `/cart/`, `/checkout/success/`, `/admin/` (quản trị).
+
+**Luồng đơn hàng:** khách thêm vào giỏ → trả bằng thẻ (Stripe Checkout) hoặc PayPal → server tính lại giá từ catalog, lưu đơn vào MySQL → khi thanh toán xác nhận (webhook Stripe / capture PayPal): gửi email xác nhận cho khách, email báo đơn cho chủ shop, và gửi đơn sang Supliful qua Shopify (nếu đã kết nối) → Supliful giao hàng → webhook Shopify cập nhật mã vận đơn và email cho khách.
+
+**Sản phẩm** nằm trong `content/products/*.md` (nội dung SEO). Giá, bật/tắt và Shopify variant ID chỉnh ở `/admin/products/`. Các file có `sample: true` là sản phẩm mẫu: không được index và **không bán được khi dùng khóa live**. Khi có sản phẩm thật: điền `size`, `servings`, giá, `shopifyVariantId`, rồi xóa dòng `sample: true`.
+
+### Cài đặt trên Hostinger (biến môi trường, xem `.env.example`)
+
+1. **MySQL:** hPanel → Databases → tạo database + user → `DATABASE_URL=mysql://USER:PASS@HOST:3306/DB`. Bảng được tạo tự động.
+2. **Stripe:** Developers → API keys → `STRIPE_SECRET_KEY`. Webhooks → Add endpoint `https://guruhealthline.com/api/webhooks/stripe/` (giữ dấu `/` cuối), sự kiện `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded` → `STRIPE_WEBHOOK_SECRET`.
+3. **PayPal:** developer.paypal.com → Apps & Credentials → `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_ENV=sandbox` (thử) hoặc `live`.
+4. **Email:** tạo hộp thư `orders@guruhealthline.com` trên Hostinger → `SMTP_USER`, `SMTP_PASS`, `ORDER_NOTIFY_EMAIL` (email nhận báo đơn).
+5. **Admin:** `ADMIN_PASSWORD` (≥ 12 ký tự), `ADMIN_SESSION_SECRET` (chuỗi ngẫu nhiên dài).
+6. **Supliful tự động (tùy chọn):** cần Supliful Pro + một store Shopify chạy ngầm (khách không thấy). Cài app Supliful, *Publish to Shopify*, bật *Automatically fulfill*, tạo custom app với quyền orders/products/customers/fulfillments → `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_ADMIN_TOKEN`. Webhook Shopify (Fulfillment creation/update, Order cancellation) → `https://guruhealthline.com/api/webhooks/shopify/`, secret → `SHOPIFY_WEBHOOK_SECRET`. Copy variant ID từng sản phẩm vào `/admin/products/`. Chưa có Shopify thì đơn được email về để đặt thủ công trên Supliful.
+
+Thử toàn bộ với khóa test (Stripe `sk_test_…`, PayPal sandbox) trước khi đổi sang live.
+
+### Chạy thử trên máy
+
+```bash
+npm run dev:db   # MySQL tạm, in ra DATABASE_URL cho .env.local
+npm run dev
+```

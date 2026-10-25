@@ -5,7 +5,7 @@ export default function robots() {
   // Earlier stages rely on the noindex meta tag + X-Robots-Tag header instead of
   // Disallow, because a disallowed page can't be crawled to see its noindex.
   return {
-    rules: [{ userAgent: "*", allow: "/" }],
+    rules: [{ userAgent: "*", allow: "/", disallow: ["/admin/", "/api/", "/cart/", "/checkout/"] }],
     sitemap: IS_PRODUCTION ? absoluteUrl("/sitemap.xml") : undefined,
   };
 }

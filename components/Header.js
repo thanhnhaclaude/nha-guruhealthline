@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { NAV, NAV_CTA, SITE_NAME } from "@/lib/site";
 import Logo from "./Logo";
+import CartLink from "./shop/CartLink";
 
 export default function Header() {
   return (
@@ -24,6 +25,7 @@ export default function Header() {
               <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2l-4.4-4.4" />
             </svg>
           </Link>
+          <CartLink />
           <details className="mnav">
             <summary aria-label="Open menu">
               <span /><span /><span />

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ShopLinks from "@/components/shop/ShopLinks";
 import { notFound } from "next/navigation";
 import JsonLd from "@/components/JsonLd";
 import PostCard from "@/components/PostCard";
@@ -105,6 +106,7 @@ export default async function IngredientPage({ params }) {
               <ProductPicks products={ing.products} />
             </section>
           )}
+          <ShopLinks ingredient={ing.slug} />
           <Faq faq={ing.faq} />
           <Sources sources={ing.sources} />
           <AuthorBox doc={ing} />

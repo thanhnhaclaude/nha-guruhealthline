@@ -40,6 +40,7 @@ export default function Footer() {
               supplement decisions. Updated {month}.
             </p>
             <ul className="ftlinks ftabout">
+              <li><Link href="/shop">Shop</Link></li>
               <li><Link href="/about">About us</Link></li>
               <li><Link href="/contact">Contact</Link></li>
               <li><Link href="/editorial-policy">Editorial policy</Link></li>
@@ -78,6 +79,9 @@ export default function Footer() {
             <Link href="/affiliate-disclosure">Affiliate Disclosure</Link>
             <Link href="/medical-disclaimer">Medical Disclaimer</Link>
             <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/terms-of-sale">Terms of Sale</Link>
+            <Link href="/shipping-policy">Shipping</Link>
+            <Link href="/returns-refunds">Returns &amp; Refunds</Link>
             <Link href="/contact">Contact</Link>
             <Link href="/all-supplements">Sitemap</Link>
           </div>

@@ -2,6 +2,7 @@ import { getAllArticles, getAllIngredients, getAllPages, getAllPosts, getAllRevi
 import { absoluteUrl } from "@/lib/site";
 import { TOPICS } from "@/lib/topics";
 import { TOOLS } from "@/lib/tools";
+import { getProductSlugs } from "@/lib/shop/products";
 
 export default function sitemap() {
   const posts = getAllPosts().filter((p) => !p.noindex);
@@ -19,6 +20,8 @@ export default function sitemap() {
     ...getAllIngredients().map((i) => entry(`/ingredients/${i.slug}`, i.updated || i.date, 0.8)),
     ...getAllArticles().map((a) => entry(`/articles/${a.slug}`, a.updated || a.date, 0.7)),
     ...getAllReviews({ includeExamples: false }).filter((r) => !r.noindex).map((r) => entry(`/reviews/${r.slug}`, r.updated || r.date, 0.8)),
+    entry("/shop", latest, 0.8),
+    ...getProductSlugs().filter((p) => !p.sample).map((p) => entry(`/shop/${p.slug}`, p.updated || latest, 0.7)),
     ...TOOLS.map((t) => entry(t.href, latest, 0.6)),
     ...getAllPages().filter((p) => !p.noindex).map((p) => entry(`/${p.slug}`, p.updated, 0.3)),
   ];
